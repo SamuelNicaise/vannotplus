@@ -7,7 +7,7 @@ import tempfile
 
 from cyvcf2 import cyvcf2
 
-from vannotplus.config import APP_TO_PED
+from vannotplus.config import APP_TO_PED, HOWARD_BIN
 from vannotplus.ped9 import Ped, Sample
 
 
@@ -73,7 +73,7 @@ def main_barcode(input_vcf, output_vcf, ped_dir, app):
 
         if len(family_samples) > 1:
             print(family_samples)
-            cmd = "/home1/data/conda/envs/howard_up_to_date/bin/howard calculation"
+            cmd = HOWARD_BIN
             cmd += f" --input {work_vcf}"
             cmd += f" --output {work_vcf}"
             cmd += " --calculations='BARCODEFAMILY'"

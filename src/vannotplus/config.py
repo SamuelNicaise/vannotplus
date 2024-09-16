@@ -1,3 +1,5 @@
+HOWARD_BIN = "/home1/data/conda/envs/howard_up_to_date/bin/howard calculation"
+
 APP_TO_PED = {
     "BBS_RP": "BBS_RP.json",
     "MYOPATHIE": "MYOPATHIE.json",
