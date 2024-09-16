@@ -1,24 +1,24 @@
-# PACKAGENAME
+# vannotplus
 
 Variables to replace across repository:
 
-- PACKAGENAME
-- PARSERNAME
-- AUTHORNAME
-- REPONAME
+- vannotplus
+- barcode
+- SamuelNicaise
+- vannotplus
 
 ## Installation
 
 ```bash
-conda create -n PACKAGENAME python=3.10
-conda activate PACKAGENAME
-git clone --shared https://github.com/AUTHORNAME/REPONAME.git
-cd REPONAME
+conda create -n vannotplus python=3.10
+conda activate vannotplus
+git clone --shared https://github.com/SamuelNicaise/vannotplus.git
+cd vannotplus
 pip install -e . 
 ```
 
 ## Usage
 
 ```bash
-python -m PACKAGENAME --help
+python -m vannotplus --help
 ```
