@@ -1,12 +1,5 @@
 # vannotplus
 
-Variables to replace across repository:
-
-- vannotplus
-- barcode
-- SamuelNicaise
-- vannotplus
-
 ## Installation
 
 ```bash
