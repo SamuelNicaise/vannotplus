@@ -72,13 +72,13 @@ def main_barcode(input_vcf, output_vcf, ped_dir, app):
                     family_samples.append(a)
 
         if len(family_samples) > 1:
-            print(family_samples)
+            log.info(f"Computing family: {family_samples})
             cmd = HOWARD_BIN
             cmd += f" --input {work_vcf}"
             cmd += f" --output {work_vcf}"
             cmd += " --calculations='BARCODEFAMILY'"
             cmd += f" --family_pedigree='{','.join(family_samples)}'"
-            print(cmd)
+            log.debug(cmd)
             run_shell(cmd)
 
             # create howard command
