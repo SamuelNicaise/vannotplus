@@ -1,6 +1,5 @@
 from collections import UserDict
 import json
-from typing import overload
 
 
 class Sample:

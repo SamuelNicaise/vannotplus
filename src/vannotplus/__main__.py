@@ -8,7 +8,7 @@ import argparse
 import logging as log
 
 import vannotplus
-from vannotplus.barcode import main_barcode
+from vannotplus.family.barcode import main_barcode
 
 
 def set_log_level(verbosity):

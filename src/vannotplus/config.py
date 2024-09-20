@@ -6,3 +6,8 @@ APP_TO_PED = {
     "WES_AGILENT": "WES.json",
     "WES_ROCHE": "WES.json",
 }
+
+MOUNT = {
+    "/home1/L_PROD/NGS/BAS/HOWARD/data": "/data",
+    "/home1/BAS/HOWARD/data": "/data",
+}

@@ -8,7 +8,7 @@ import tempfile
 from cyvcf2 import cyvcf2
 
 from vannotplus.config import APP_TO_PED, HOWARD_BIN
-from vannotplus.ped9 import Ped, Sample
+from vannotplus.family.ped9 import Ped, Sample
 
 
 def run_shell(cmd: str) -> None:
@@ -72,7 +72,7 @@ def main_barcode(input_vcf, output_vcf, ped_dir, app):
                     family_samples.append(a)
 
         if len(family_samples) > 1:
-            log.info(f"Computing family: {family_samples})
+            log.info(f"Computing family: {family_samples}")
             cmd = HOWARD_BIN
             cmd += f" --input {work_vcf}"
             cmd += f" --output {work_vcf}"
