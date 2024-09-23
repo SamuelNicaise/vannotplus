@@ -7,21 +7,8 @@ import tempfile
 
 from cyvcf2 import cyvcf2
 
-from vannotplus.config import APP_TO_PED, HOWARD_BIN
+from vannotplus.commons import load_ped, run_shell
 from vannotplus.family.ped9 import Ped, Sample
-
-
-def run_shell(cmd: str) -> None:
-    """
-    Run cmd in a separate shell
-    Show stdout/stderr only if log level is log.DEBUG
-    """
-    log.debug(cmd)
-    if log.root.level <= 10:
-        redirect = None
-    else:
-        redirect = subprocess.DEVNULL
-    subprocess.run(cmd, shell=True, stdout=redirect, stderr=redirect)
 
 
 def get_parental_aliases(sample: Sample, ped: Ped, is_mother: bool) -> list[str]:
@@ -46,13 +33,9 @@ def get_parental_aliases(sample: Sample, ped: Ped, is_mother: bool) -> list[str]
     return aliases
 
 
-def main_barcode(input_vcf, output_vcf, ped_dir, app):
-    # get samples list from input VCF
+def main_barcode(input_vcf, output_vcf, app, config):
     vcf = cyvcf2.VCF(input_vcf)
-    # identify ped file through a config file
-    ped_path = osj(ped_dir, APP_TO_PED[app])
-    # load ped file
-    ped = Ped(ped_file=ped_path)
+    ped = load_ped(config, app)
     tmp_dir = tempfile.TemporaryDirectory()
     work_vcf = osj(tmp_dir.name, os.path.basename(input_vcf))
     shutil.copy2(input_vcf, work_vcf)
@@ -71,9 +54,10 @@ def main_barcode(input_vcf, output_vcf, ped_dir, app):
                 if a in vcf.samples:
                     family_samples.append(a)
 
+        # howard command can be run iteratively with the same vcf in input and output, removing the need for a final merge
         if len(family_samples) > 1:
             log.info(f"Computing family: {family_samples}")
-            cmd = HOWARD_BIN
+            cmd = config["howard"]["bin"]
             cmd += f" --input {work_vcf}"
             cmd += f" --output {work_vcf}"
             cmd += " --calculations='BARCODEFAMILY'"
@@ -81,8 +65,5 @@ def main_barcode(input_vcf, output_vcf, ped_dir, app):
             log.debug(cmd)
             run_shell(cmd)
 
-            # create howard command
-
-    # merge back VCF for seamless VANNOT integration
     shutil.move(work_vcf, output_vcf)
     tmp_dir.cleanup()
