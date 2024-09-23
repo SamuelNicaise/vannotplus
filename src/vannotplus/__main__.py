@@ -8,27 +8,9 @@ import argparse
 import logging as log
 
 import vannotplus
+from vannotplus.commons import set_log_level, load_config
 from vannotplus.family.barcode import main_barcode
-
-
-def set_log_level(verbosity):
-    verbosity = verbosity.lower()
-    configs = {
-        "debug": log.DEBUG,
-        "info": log.INFO,
-        "warning": log.WARNING,
-        "error": log.ERROR,
-        "critical": log.CRITICAL,
-    }
-    if verbosity not in configs.keys():
-        raise ValueError(
-            f"Unknown verbosity level: {verbosity}\nPlease use any in: {configs.keys()}"
-        )
-    log.basicConfig(
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-        level=configs[verbosity],
-    )
+from vannotplus.exomiser.exomiser import main_exomiser
 
 
 def main():
@@ -48,36 +30,42 @@ def main():
     )
     barcode_parser.set_defaults(subparser="barcode")
 
-    barcode_parser.add_argument(
-        "-i",
-        "--input",
-        type=str,
-        required=True,
-        help="Input VCF containing all samples of interest",
+    exomiser_parser = subparsers.add_parser(
+        "exomiser",
+        help="",
+        formatter_class=argparse.MetavarTypeHelpFormatter,
     )
-    barcode_parser.add_argument(
-        "-o",
-        "--output",
-        type=str,
-        required=True,
-        help="Output VCF containing all samples of interest",
-    )
-    barcode_parser.add_argument(
-        "-p",
-        "--ped-dir",
-        type=str,
-        required=True,
-        help="Ped_raw's data directory, containing all ped files",
-    )
-    barcode_parser.add_argument(
-        "-a",
-        "--app",
-        type=str,
-        required=True,
-        help="STARK application",
-    )
+    exomiser_parser.set_defaults(subparser="exomiser")
 
-    for subparser in (barcode_parser,):
+    for subparser in (barcode_parser, exomiser_parser):
+        subparser.add_argument(
+            "-i",
+            "--input",
+            type=str,
+            required=True,
+            help="Input VCF containing all samples of interest",
+        )
+        subparser.add_argument(
+            "-o",
+            "--output",
+            type=str,
+            required=True,
+            help="Output VCF containing all samples of interest",
+        )
+        subparser.add_argument(
+            "-a",
+            "--app",
+            type=str,
+            required=True,
+            help="STARK application",
+        )
+        subparser.add_argument(
+            "-c",
+            "--config",
+            type=str,
+            required=True,
+            help="YAML config file",
+        )
         subparser.add_argument(
             "-v",
             "--verbosity",
@@ -92,8 +80,12 @@ def main():
     else:
         set_log_level(args.verbosity)
         log.debug(f"Args: {str(args)}")
+        config = load_config(args.config)
+        log.debug(f"config: {config}")
         if args.subparser == "barcode":
-            main_barcode(args.input, args.output, args.ped_dir, args.app)
+            main_barcode(args.input, args.output, args.app, config)
+        elif args.subparser == "exomiser":
+            main_exomiser(args.input, args.output, args.app, config)
 
 
 if __name__ == "__main__":
