@@ -1,4 +1,3 @@
-from datetime import datetime
 import json
 import logging as log
 import os
@@ -8,7 +7,6 @@ from cyvcf2 import cyvcf2
 import numpy as np
 
 from vannotplus.commons import load_ped, run_shell
-from vannotplus.family.ped9 import Ped
 
 TEMPLATE = osj(os.path.dirname(__file__), "template.json")
 
@@ -130,9 +128,6 @@ def write_template(
     template["phenopacket"]["htsFiles"] = [
         {"uri": vcf_in_container, "htsFormat": "VCF", "genomeAssembly": assembly}
     ]
-    # template["phenopacket"]["metaData"]["created"] = datetime.today().strftime(
-    #     "%Y-%m-%dT%H:%M:%S%Z"
-    # )
     template["outputOptions"]["outputDirectory"] = output_dir_in_container
     template["outputOptions"]["outputFileName"] = s
 
