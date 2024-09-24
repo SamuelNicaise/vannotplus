@@ -7,8 +7,8 @@ barcode:
 exomiser:
 	python -m vannotplus exomiser -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/ped/jb_trio_output.vcf -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/test/merged.vcf -c src/vannotplus/config.yml -a WES_AGILENT -v debug
 
-score:
-	python -m vannotplus score -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/ped/jb_trio_output.vcf -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/jb_trio_scored.vcf
+annot:
+	python -m vannotplus annot -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/jb_trio_output.vcf -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/annot.vcf -c src/vannotplus/config.yml
 
 
 send:

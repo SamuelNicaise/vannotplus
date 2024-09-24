@@ -26,3 +26,5 @@ exomiser:
   "heap": "75G"
   "db": "/root/howard/databases/exomiser/sam"
   "properties": "/root/howard/databases/exomiser/sam/application.properties"
+
+gene_field: "GNOMEN"

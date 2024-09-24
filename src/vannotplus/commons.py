@@ -4,6 +4,8 @@ from os.path import join as osj
 import subprocess
 import yaml
 
+from cyvcf2 import cyvcf2
+
 from vannotplus.family.ped9 import Ped
 
 
@@ -54,3 +56,12 @@ def run_shell(cmd: str) -> None:
     else:
         redirect = subprocess.DEVNULL
     subprocess.run(cmd, shell=True, stdout=redirect, stderr=redirect)
+
+
+def get_variant_id(variant: cyvcf2.Variant) -> str:
+    """
+    An alternative to building a key would be using repr(Variant)
+    Both have identical performance so the one that doesn't depend on library implementation is favored
+    + it can be changed to be SV compatible
+    """
+    return "_".join([variant.CHROM, str(variant.POS), variant.REF, str(variant.ALT)])
