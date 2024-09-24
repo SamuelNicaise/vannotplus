@@ -1,8 +1,13 @@
 from cyvcf2 import cyvcf2
 
+import numpy as np
 
-def main_vannotscore(input_vcf: str, output_vcf: str) -> None:
-    input_vcf = cyvcf2.VCF(input_vcf)
+from vannotplus.annot.gmc import get_gmc_by_variant, get_gmc_header
+from vannotplus.commons import get_variant_id
+
+
+def main_annot(input_vcf_path: str, output_vcf_path: str, config: dict) -> None:
+    input_vcf = cyvcf2.VCF(input_vcf_path)
     input_vcf.add_info_to_header(
         {
             "ID": "vannotscore",
@@ -11,11 +16,19 @@ def main_vannotscore(input_vcf: str, output_vcf: str) -> None:
             "Description": "VANNOT score, an emulation of VaRank score",
         }
     )
+    input_vcf.add_format_to_header(get_gmc_header(config))
+    variant_gmc_dic = get_gmc_by_variant(input_vcf_path, config)
 
-    output_vcf = cyvcf2.Writer(output_vcf, input_vcf)
+    output_vcf = cyvcf2.Writer(output_vcf_path, input_vcf)
 
     for variant in input_vcf:
         variant.INFO["vannotscore"] = get_score(variant)
+        variant_id = get_variant_id(variant)
+        try:
+            variant.set_format("GMC", variant_gmc_dic[variant_id])
+        except KeyError:
+            # variant is not in a gene
+            pass
         output_vcf.write_record(variant)
 
     output_vcf.close()

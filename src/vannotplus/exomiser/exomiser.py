@@ -6,7 +6,7 @@ from os.path import join as osj
 from cyvcf2 import cyvcf2
 import numpy as np
 
-from vannotplus.commons import load_ped, run_shell
+from vannotplus.commons import get_variant_id, load_ped, run_shell
 
 TEMPLATE = osj(os.path.dirname(__file__), "template.json")
 
@@ -77,7 +77,7 @@ def main_exomiser(input_vcf, output_vcf, app, config):
     writer = cyvcf2.Writer(output_vcf, vcf)
     writer.write_header()
     for variant in vcf:
-        key = "_".join([variant.CHROM, str(variant.POS), variant.REF, str(variant.ALT)])
+        key = get_variant_id(variant)
 
         for annot in annots_to_add:
             annot_list = []
@@ -107,7 +107,7 @@ def get_annotated_variants(vcf_path: str) -> dict:
 
     res = {}
     for variant in vcf:
-        key = "_".join([variant.CHROM, str(variant.POS), variant.REF, str(variant.ALT)])
+        key = get_variant_id(variant)
         exomiser_data = variant.INFO["Exomiser"].split("|")
         res[key] = {
             "EXOMISER_P_VALUE": exomiser_data[5],
