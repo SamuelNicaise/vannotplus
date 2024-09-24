@@ -11,6 +11,7 @@ import vannotplus
 from vannotplus.commons import set_log_level, load_config
 from vannotplus.family.barcode import main_barcode
 from vannotplus.exomiser.exomiser import main_exomiser
+from vannotplus.score import main_vannotscore
 
 
 def main():
@@ -37,7 +38,14 @@ def main():
     )
     exomiser_parser.set_defaults(subparser="exomiser")
 
-    for subparser in (barcode_parser, exomiser_parser):
+    score_parser = subparsers.add_parser(
+        "score",
+        help="",
+        formatter_class=argparse.MetavarTypeHelpFormatter,
+    )
+    score_parser.set_defaults(subparser="score")
+
+    for subparser in (barcode_parser, exomiser_parser, score_parser):
         subparser.add_argument(
             "-i",
             "--input",
@@ -52,6 +60,8 @@ def main():
             required=True,
             help="Output VCF containing all samples of interest",
         )
+
+    for subparser in (barcode_parser, exomiser_parser):
         subparser.add_argument(
             "-a",
             "--app",
@@ -66,6 +76,8 @@ def main():
             required=True,
             help="YAML config file",
         )
+
+    for subparser in (barcode_parser, exomiser_parser, score_parser):
         subparser.add_argument(
             "-v",
             "--verbosity",
@@ -80,12 +92,16 @@ def main():
     else:
         set_log_level(args.verbosity)
         log.debug(f"Args: {str(args)}")
-        config = load_config(args.config)
-        log.debug(f"config: {config}")
         if args.subparser == "barcode":
+            config = load_config(args.config)
+            log.debug(f"config: {config}")
             main_barcode(args.input, args.output, args.app, config)
         elif args.subparser == "exomiser":
+            config = load_config(args.config)
+            log.debug(f"config: {config}")
             main_exomiser(args.input, args.output, args.app, config)
+        elif args.subparser == "score":
+            main_vannotscore(args.input, args.output)
 
 
 if __name__ == "__main__":
