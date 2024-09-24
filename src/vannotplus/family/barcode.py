@@ -2,7 +2,6 @@ import logging as log
 import os
 from os.path import join as osj
 import shutil
-import subprocess
 import tempfile
 
 from cyvcf2 import cyvcf2
