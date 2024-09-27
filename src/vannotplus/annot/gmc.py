@@ -4,7 +4,7 @@ import numpy as np
 from vannotplus.commons import get_variant_id
 
 
-def get_gmc_header(config) -> dict[str, str | int]:
+def get_gmc_header(gene_field: str) -> dict[str, str | int]:
     """
     To be used with cyvcf2.VCF.set_format()
     """
@@ -12,7 +12,7 @@ def get_gmc_header(config) -> dict[str, str | int]:
         "ID": "GMC",
         "Number": 1,
         "Type": "Integer",
-        "Description": f"Gene Mutations Count, i.e. how many variants were called in the current gene (where gene is defined by the {config['gene_field']} field)",
+        "Description": f"Gene Mutations Count, i.e. how many variants were called in the current gene (where gene is defined by the {gene_field} field)",
     }
 
 
@@ -25,7 +25,7 @@ def genotypes_to_counts(genotypes: np.ndarray) -> list[int]:
     return np.where(1 <= genotypes <= 2, 1, 0)
 
 
-def get_gmc_by_variant(vcf_path: str, config: dict) -> dict[str, np.ndarray]:
+def get_gmc_by_variant(vcf_path: str, gene_field: str) -> dict[str, np.ndarray]:
     # gts012=True is extremely important for genotypes_to_counts
     vcf = cyvcf2.VCF(vcf_path, gts012=True)
     variant_gene_dict = {}
@@ -34,7 +34,7 @@ def get_gmc_by_variant(vcf_path: str, config: dict) -> dict[str, np.ndarray]:
     for variant in vcf:
         key = get_variant_id(variant)
         try:
-            gene = variant.INFO[config["gene_field"]]
+            gene = variant.INFO[gene_field]
         except KeyError:
             # variant is not in a gene
             continue
