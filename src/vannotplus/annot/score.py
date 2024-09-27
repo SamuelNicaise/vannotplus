@@ -16,8 +16,8 @@ def main_annot(input_vcf_path: str, output_vcf_path: str, config: dict) -> None:
             "Description": "VANNOT score, an emulation of VaRank score",
         }
     )
-    input_vcf.add_format_to_header(get_gmc_header(config))
-    variant_gmc_dic = get_gmc_by_variant(input_vcf_path, config)
+    input_vcf.add_format_to_header(get_gmc_header(config["gene_field"]))
+    variant_gmc_dic = get_gmc_by_variant(input_vcf_path, config["gene_field"])
 
     output_vcf = cyvcf2.Writer(output_vcf_path, input_vcf)
 
@@ -52,9 +52,6 @@ def get_score(variant: cyvcf2.Variant) -> int:
     S_LSEstrong : Strong local splice effect -> 40
     S_LSEweak: Weak local splice activation -> 35
     S_DeepSplice : Intronic mutation resulting in a significant effect on splicing -> 25
-    S_ExonIntron
-
-    #verify that missense is correct
 
     # Add SIFT & PPH2 bonus for missense only.
     incr score [addBonus $siftPred $siftMed $thePPH2 $phastcons]
@@ -64,7 +61,7 @@ def get_score(variant: cyvcf2.Variant) -> int:
     snpeff_annotation = get_variant_info(variant, "snpeff_annotation").lower()
     outcome = get_variant_info(variant, "outcome").lower()
 
-    if "pathogenic" in clinvar:
+    if "pathogenic" in clinvar:  # covers both Pathogenic and Probably pathogenic
         score = 110
     elif any([v in outcome for v in ["frameshift", "stop_gained", "stop gained"]]):
         score = 100
@@ -96,6 +93,65 @@ def get_score(variant: cyvcf2.Variant) -> int:
         score = 1
     else:
         score = 0
+
+    score = get_splicing_score(variant, score)
+
+    return score
+
+
+def get_splicing_score(variant: cyvcf2.Variant, score: int) -> int:
+    score = get_spliceai_score(variant, score)
+    # spip: do the same as spliceai?
+    return score
+
+
+def get_spliceai_score(variant: cyvcf2.Variant, score: int) -> int:
+    SPLICEAI_THRESHOLD = 0.5
+    S_ESSENTIALSPLICE = 90
+    S_CLOSESPLICE = 70
+    S_DEEPSPLICE = 25
+
+    spliceai_symbols = get_variant_info(variant, "SpliceAI_SYMBOL").split(",")
+    index = spliceai_symbols[0]
+    # TODO: change when HOWARD's transcript prioritization is done
+    # tnomen = get_variant_info(variant, "TNOMEN")
+    # index =  spliceai_symbols.index(tnomen)
+    spliceai_scores_fields = [
+        "SpliceAI_DS_AG",
+        "SpliceAI_DS_AL",
+        "SpliceAI_DS_DG",
+        "SpliceAI_DS_DL",
+    ]
+    spliceai_pos_fields = [
+        "SpliceAI_DP_AG",
+        "SpliceAI_DP_AL",
+        "SpliceAI_DP_DG",
+        "SpliceAI_DP_DL",
+    ]
+    splice_ai_scores = [
+        float(get_variant_info(variant, f)) for f in spliceai_scores_fields
+    ]
+    splice_ai_pos = [int(get_variant_info(variant, f)) for f in spliceai_pos_fields]
+    max_score = max(splice_ai_scores)
+    index = splice_ai_scores.index(max_score)
+    dist = splice_ai_pos[index]
+
+    if max_score > SPLICEAI_THRESHOLD:
+        # do the pos thing
+        if score < S_ESSENTIALSPLICE:
+            if dist in (1, 2):
+                score = S_ESSENTIALSPLICE  # + phastcons
+        elif score < S_CLOSESPLICE:
+            if (index in (2, 3) and -3 < dist < 6) or (
+                index in (0, 1) and -12 < dist < 2
+            ):
+                # index in (0,1) = acceptor = 3'
+                # index in (2,3) = donor = 5'
+                score = S_CLOSESPLICE  # + phastcons
+        elif score < S_DEEPSPLICE:
+            snpeff_annotation = get_variant_info(variant, "snpeff_annotation").lower()
+            if "intron" in snpeff_annotation:
+                score = S_DEEPSPLICE  # +phastcons
     return score
 
 
@@ -130,6 +186,5 @@ if __name__ == "__main__":
     # input_vcf = "/home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/cut.vcf"
     input_vcf = "/home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/KLA2403985.final.vcf"
     output_vcf = "/home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/prio.vcf"
-    app = ""
     config = {}
-    main_vannotscore(input_vcf, output_vcf, app, config)
+    main_annot(input_vcf, output_vcf, config)
