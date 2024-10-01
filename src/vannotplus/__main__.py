@@ -6,12 +6,19 @@
 
 import argparse
 import logging as log
+from os.path import dirname, join as osj
+import shutil
 
 import vannotplus
 from vannotplus.commons import set_log_level, load_config
 from vannotplus.family.barcode import main_barcode
 from vannotplus.exomiser.exomiser import main_exomiser
 from vannotplus.annot.score import main_annot
+
+
+def main_config(output):
+    default_config = osj(dirname(vannotplus.__file__), "config.yml")
+    shutil.copy(default_config, output)
 
 
 def main():
@@ -23,6 +30,16 @@ def main():
     )
 
     subparsers = parser.add_subparsers(help="sub-command help")
+
+    config_parser = subparsers.add_parser(
+        "config",
+        help="Create a default config file",
+        formatter_class=argparse.MetavarTypeHelpFormatter,
+    )
+    config_parser.set_defaults(subparser="config")
+    config_parser.add_argument(
+        "-c", "--config", default="./config.yml", help="Config file path [./config.yml]"
+    )
 
     barcode_parser = subparsers.add_parser(
         "barcode",
@@ -71,14 +88,16 @@ def main():
         )
 
     # separate loops to keep args in order
+    default_config = osj(dirname(vannotplus.__file__), "config.yml")
     for subparser in (barcode_parser, exomiser_parser, score_parser):
         subparser.add_argument(
             "-c",
             "--config",
             type=str,
-            required=True,
-            help="YAML config file",
+            default=default_config,
+            help=f"YAML config file [{default_config}]",
         )
+    for subparser in (barcode_parser, exomiser_parser, score_parser, config_parser):
         subparser.add_argument(
             "-v",
             "--verbosity",
@@ -93,6 +112,8 @@ def main():
     else:
         set_log_level(args.verbosity)
         log.debug(f"Args: {str(args)}")
+        if args.subparser == "config":
+            main_config(args.config)
         config = load_config(args.config)
         log.debug(f"config: {config}")
         if args.subparser == "barcode":
