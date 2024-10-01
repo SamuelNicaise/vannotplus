@@ -1,30 +1,36 @@
 howard: 
-  bin: "/home1/data/conda/envs/howard_up_to_date/bin/howard calculation"
+  bin: /home1/data/conda/envs/howard_up_to_date/bin/howard calculation
   version: "0.11.0"
 
-ped_dir: "/home1/data/WORK_DIR_SAM/Ped_raw/Data"
+ped_dir: /home1/data/WORK_DIR_SAM/Ped_raw/Data
 
 app_to_ped:
-  "BBS_RP": "BBS_RP.json"
-  "DI": "DI.json"
-  "DIPAI": "DIPAI.json"
-  "GENODENT": "GENODENT.json"
-  "INFERTILITE": "INFERTILITE.json"
-  "MYOPATHIE": "MYOPATHIE.json"
-  "PC_NEURO": "PC_NEURO.json"
-  "PMDA": "PMDA.json"
-  "WES_AGILENT": "WES.json"
-  "WES_TWIST": "WES.json"
+  BBS_RP: BBS_RP.json
+  DI: DI.json
+  DIPAI: DIPAI.json
+  GENODENT: GENODENT.json
+  INFERTILITE: INFERTILITE.json
+  MYOPATHIE: MYOPATHIE.json
+  PC_NEURO: PC_NEURO.json
+  PMDA: PMDA.json
+  WES_AGILENT: WES.json
+  WES_TWIST: WES.json
 
 mount:
-  "/home1/L_PROD/NGS/BAS/HOWARD/data": "/data"
-  "/home1/BAS/HOWARD/data": "/data"
+  /home1/L_PROD/NGS/BAS/HOWARD/data: /data
+  /home1/BAS/HOWARD/data: /data
 
 exomiser:
-  "jar": "/root/howard/tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar"
-  "threads": "12"
-  "heap": "75G"
-  "db": "/root/howard/databases/exomiser/sam"
-  "properties": "/root/howard/databases/exomiser/sam/application.properties"
+  jar: /root/howard/tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar
+  threads: "12"
+  heap: "75G"
+  db: /root/howard/databases/exomiser/sam
+  properties: /root/howard/databases/exomiser/sam/application.properties
 
-gene_field: "GNOMEN"
+gene_field: GNOMEN
+
+score_matrix:    
+  SPLICEAI_THRESHOLD: 0.5
+  S_ESSENTIALSPLICE: 90
+  S_CLOSESPLICE: 70
+  S_DEEPSPLICE: 25
