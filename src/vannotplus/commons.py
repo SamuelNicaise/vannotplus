@@ -65,3 +65,13 @@ def get_variant_id(variant: cyvcf2.Variant) -> str:
     + it can be changed to be SV compatible
     """
     return "_".join([variant.CHROM, str(variant.POS), variant.REF, str(variant.ALT)])
+
+
+def get_variant_info(variant: cyvcf2.Variant, field: str) -> str:
+    """
+    Do not deal with types until needed for maximum performance
+    """
+    try:
+        return variant.INFO[field]
+    except KeyError:
+        return ""
