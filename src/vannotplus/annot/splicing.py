@@ -36,6 +36,9 @@ def get_info_from_tuple(
     info = get_variant_info(variant, info_field)
     if isinstance(info, tuple):
         return info[tnomen_index]
+    elif isinstance(info, str):
+        # str lists are not loaded as tuples
+        return info.split(",")[tnomen_index]
     return info
 
 
