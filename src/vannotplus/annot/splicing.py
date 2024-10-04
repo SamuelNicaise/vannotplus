@@ -3,25 +3,23 @@ from cyvcf2 import cyvcf2
 from vannotplus.commons import get_variant_info
 
 
-def get_splicing_score(variant: cyvcf2.Variant, score: int, config: dict) -> int:
+def get_splicing_score(variant: cyvcf2.Variant, score: int, score_config: dict) -> int:
     """
     Returns the maximum possible score from either spip or spliceAI
     If score is already higher than the maximum possible with splicing, return it directly.
     """
 
-    score_matrix = config["score_matrix"]
-
     # do not bother computing score if already > max
-    if score >= score_matrix["S_ESSENTIALSPLICE"]:
+    if score >= score_config["S_EssentialSplice"]:
         return score
     else:
-        score = get_spip_score(variant, score, score_matrix)
+        score = get_spip_score(variant, score, score_config)
 
     # same if SPIP already got max score
-    if score >= score_matrix["S_ESSENTIALSPLICE"]:
+    if score >= score_config["S_EssentialSplice"]:
         return score
     else:
-        score = get_spliceai_score(variant, score, score_matrix)
+        score = get_spliceai_score(variant, score, score_config)
 
     return score
 
@@ -42,7 +40,7 @@ def get_info_from_tuple(
     return info
 
 
-def get_spip_score(variant: cyvcf2.Variant, score: int, score_matrix: dict) -> int:
+def get_spip_score(variant: cyvcf2.Variant, score: int, score_config: dict) -> int:
     tnomen_index = 0
     # TODO: change when HOWARD's transcript prioritization is done
     # spip_transcripts = get_variant_info(variant, "SPiP_transcript").split(",")
@@ -56,14 +54,14 @@ def get_spip_score(variant: cyvcf2.Variant, score: int, score_matrix: dict) -> i
         dist = int(get_info_from_tuple(variant, "SPiP_DistSS", tnomen_index))
         nearest_ss = get_info_from_tuple(variant, "SPiP_NearestSS", tnomen_index)
         score = get_generalized_splicing_score(
-            variant, score, dist, nearest_ss, score_matrix
+            variant, score, dist, nearest_ss, score_config
         )
 
     return score
 
 
-def get_spliceai_score(variant: cyvcf2.Variant, score: int, score_matrix: dict) -> int:
-    SPLICEAI_THRESHOLD = score_matrix["SPLICEAI_THRESHOLD"]
+def get_spliceai_score(variant: cyvcf2.Variant, score: int, score_config: dict) -> int:
+    SPLICEAI_THRESHOLD = score_config["Threshold_SpliceAI"]
 
     tnomen_index = 0
     # TODO: change when HOWARD's transcript prioritization is done
@@ -109,31 +107,44 @@ def get_spliceai_score(variant: cyvcf2.Variant, score: int, score_matrix: dict) 
             )
 
         score = get_generalized_splicing_score(
-            variant, score, dist, nearest_ss, score_matrix
+            variant, score, dist, nearest_ss, score_config
         )
 
     return score
 
 
 def get_generalized_splicing_score(
-    variant: cyvcf2.Variant, score: int, dist: int, nearest_ss: str, score_matrix: dict
+    variant: cyvcf2.Variant, score: int, dist: int, nearest_ss: str, score_config: dict
 ) -> int:
-    S_ESSENTIALSPLICE = score_matrix["S_ESSENTIALSPLICE"]
-    S_CLOSESPLICE = score_matrix["S_CLOSESPLICE"]
-    S_DEEPSPLICE = score_matrix["S_DEEPSPLICE"]
+    S_ESSENTIALSPLICE = score_config["S_EssentialSplice"]
+    S_CLOSESPLICE = score_config["S_CloseSplice"]
+    S_DEEPSPLICE = score_config["S_DeepSplice"]
 
     if score < S_ESSENTIALSPLICE:
         if dist in (1, 2):
-            score = S_ESSENTIALSPLICE  # + phastcons + phylop + cadd
+            score = S_ESSENTIALSPLICE + get_bonus(variant, score_config)
     elif score < S_CLOSESPLICE:
         if (nearest_ss == "donor" and -3 < dist < 6) or (
             nearest_ss == "acceptor" and -12 < dist < 2
         ):
-            score = S_CLOSESPLICE  # + phastcons  + phylop + cadd
+            score = S_CLOSESPLICE + get_bonus(variant, score_config)
     elif score < S_DEEPSPLICE:
         snpeff_annotation = get_variant_info(variant, "snpeff_annotation").lower()
         if "intron" in snpeff_annotation:
-            score = S_DEEPSPLICE  # + phastcons  + phylop + cadd
+            score = S_DEEPSPLICE + get_bonus(variant, score_config)
 
     # TODO: adjust condition with bonuses
     return score
+
+
+def get_bonus(variant: cyvcf2.Variant, score_config: dict):
+    """for splicing: phastcons
+
+    Planned new bonuses:  + phylop + cadd
+    """
+    bonus = 0
+    phastcons = get_variant_info(variant, "phastCons100way")
+    if phastcons != "" and float(phastcons) > score_config["Threshold_Phastcons"]:
+        bonus += score_config["B_phastCons"]
+
+    return bonus
