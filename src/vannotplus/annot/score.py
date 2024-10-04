@@ -45,15 +45,17 @@ def get_score(variant: cyvcf2.Variant, config: dict) -> int:
     # Add SIFT & PPH2 bonus for missense only.
     incr score [addBonus $siftPred $siftMed $thePPH2 $phastcons]
     """
+    score_config = config["score_config"]
 
     clinvar = get_variant_info(variant, "CLINVAR_clnsig").lower()
     snpeff_annotation = get_variant_info(variant, "snpeff_annotation").lower()
     outcome = get_variant_info(variant, "outcome").lower()
 
     if "pathogenic" in clinvar:  # covers both Pathogenic and Probably pathogenic
-        score = 110
+        score = score_config["S_Known"]
     elif any([v in outcome for v in ["frameshift", "stop_gained", "stop gained"]]):
-        score = 100
+        score = score_config["S_StopGain"]
+        score += get_phastcons_bonus(variant, score_config)
     elif any(
         [
             v in outcome
@@ -67,33 +69,39 @@ def get_score(variant: cyvcf2.Variant, config: dict) -> int:
             ]
         ]
     ):
-        score = 80
+        score = score_config["S_StartStopLoss"]
+        score += get_phastcons_bonus(variant, score_config)
     elif "missense" in snpeff_annotation:
-        score = 50
-        score += get_bonus_score(variant)
+        score = score_config["S_Missense"]
+        score += get_bonus_score(variant, score_config)
     elif any([v in outcome for v in ["in-frame", "inframe"]]):
-        score = 30
+        score = score_config["S_Inframe"]
     elif any([v in outcome for v in ["synonymous", "start_retained", "stop_retained"]]):
-        score = 10
+        score = score_config["S_Synonymous"]
     # S_ExonIntron / varlocation
     elif any([v in snpeff_annotation for v in ["intron", "exon"]]):
-        score = 2
+        score = score_config["S_ExonIntron"]
+        score += get_phastcons_bonus(variant, score_config)
     elif "utr" in snpeff_annotation:
-        score = 1
+        score = score_config["S_UTR"]
     else:
         score = 0
 
-    score = get_splicing_score(variant, score, config)
+    score = get_splicing_score(variant, score, score_config)
 
     return score
 
 
-def get_bonus_score(variant: cyvcf2.Variant) -> int:
+def get_bonus_score(variant: cyvcf2.Variant, score_config) -> int:
     """
     Polyphen2 prediction based on HumDiv :
     - D (probably damaging HDIV score in [0.9571] or rankscore in [0.558590.91137])
     - P (possibly damaging  HDIV score in [0.4540.956] or rankscore in [0.370430.55681])
     - B (benign  HDIV score in [00.452] or rankscore in [0.030610.36974]).
+
+    SIFT : same system
+
+    Phastcons: based on a score threshold
 
     Add: alphamissense
     Add: provean
@@ -114,11 +122,16 @@ def get_bonus_score(variant: cyvcf2.Variant) -> int:
         bonus += 5
 
     # Which phastcons? Only one is left, use that one
-    phastcons = get_variant_info(variant, "phastCons100way")
-    if phastcons != "" and float(phastcons) > 0.95:
-        bonus += 5
+    bonus += get_phastcons_bonus(variant, score_config)
 
     return bonus
+
+
+def get_phastcons_bonus(variant: cyvcf2.Variant, score_config: dict):
+    phastcons = get_variant_info(variant, "phastCons100way")
+    if phastcons != "" and float(phastcons) > score_config["Threshold_Phastcons"]:
+        return score_config["B_phastCons"]
+    return 0
 
 
 if __name__ == "__main__":

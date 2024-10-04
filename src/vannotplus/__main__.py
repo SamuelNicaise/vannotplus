@@ -1,5 +1,5 @@
 """
-@Goal: Perform VANNOT's steps who depend on ped9 : exomiser and familybarcode annotations
+@Goal: Expand VANNOT's capabilities with ped9 (family barcode, exomiser), GMC and scoring
 @Author: Samuel Nicaise
 @Date: September 2024
 """
