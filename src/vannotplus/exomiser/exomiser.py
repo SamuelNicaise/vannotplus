@@ -123,8 +123,12 @@ def write_template(
     template, s, ped, vcf_in_container, output_dir_in_container, output_dir, assembly
 ):
     template["phenopacket"]["subject"]["id"] = s
-    template["phenopacket"]["subject"]["sex"] = ped[s].sex
-    template["phenopacket"]["hpoIds"] = ped[s].HPO
+    if s in ped:
+        template["phenopacket"]["subject"]["sex"] = ped[s].sex
+        template["phenopacket"]["hpoIds"] = ped[s].HPO
+    else:
+        template["phenopacket"]["subject"]["sex"] = ""
+        template["phenopacket"]["hpoIds"] = []
     template["phenopacket"]["htsFiles"] = [
         {"uri": vcf_in_container, "htsFormat": "VCF", "genomeAssembly": assembly}
     ]
