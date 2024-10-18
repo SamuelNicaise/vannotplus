@@ -2,6 +2,7 @@ import json
 import logging as log
 import os
 from os.path import join as osj
+import shutil
 import tempfile
 
 
@@ -97,6 +98,9 @@ def main_exomiser(input_vcf, output_vcf, app, config):
             variant.set_format(annot, np.array(annot_list, dtype=float))
         writer.write_record(variant)
     writer.close()
+
+    if log.root.level > 10:  # if log level > debug
+        shutil.rmtree(tmp_dir)
 
 
 def get_annotated_variants(vcf_path: str) -> dict:

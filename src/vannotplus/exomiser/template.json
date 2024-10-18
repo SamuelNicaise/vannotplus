@@ -104,7 +104,6 @@
         "outputContributingVariantsOnly": false,
         "numGenes": 0,
         "outputFormats": [
-            "TSV_VARIANT",
             "VCF"
         ],
         "outputDirectory": "DEFAULT_TEMPLATE",
