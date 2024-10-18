@@ -18,14 +18,15 @@ app_to_ped:
 
 mount:
   /home1/L_PROD/NGS/BAS/HOWARD/data: /data
-  /home1/BAS/HOWARD/data: /data
+  /home1/L_PROD/NGS/BAS/HOWARD/databases: /databases
+  # /home1/BAS/HOWARD/data: /data
 
 exomiser:
-  jar: /root/howard/tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar
+  jar: /tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar
   threads: "12"
   heap: "75G"
-  db: /root/howard/databases/exomiser/sam
-  properties: /root/howard/databases/exomiser/sam/application.properties
+  db: /databases/exomiser/sam
+  properties: /databases/exomiser/sam/application.properties
 
 gene_field: OMIM_genes
 
