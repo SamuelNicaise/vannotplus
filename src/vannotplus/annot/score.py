@@ -105,7 +105,7 @@ def get_bonus_score(variant: cyvcf2.Variant, score_config) -> int:
 
     Add: alphamissense
     Add: provean
-    Add: FATHMM
+    Add: FATHMM # ignore
     Add: CADD
     Add: mistic
     """
