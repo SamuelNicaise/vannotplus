@@ -5,29 +5,49 @@ from vannotplus.annot.splicing import get_splicing_score
 from vannotplus.commons import get_variant_id, get_variant_info
 
 
-def main_annot(input_vcf_path: str, output_vcf_path: str, config: dict) -> None:
+def main_annot(
+    input_vcf_path: str,
+    output_vcf_path: str,
+    config: dict,
+    do_vannotscore: bool = False,
+) -> None:
+    """
+    VANNOT score has been replaced by PZTScore_transcript computed by howard
+    if do_vannotscore == True: compute it and add it to vcf
+    By default it is False and VANNOT score is not computed
+
+    This code is still required in VANNOT to add GMC to the final VCF
+    """
     input_vcf = cyvcf2.VCF(input_vcf_path)
-    input_vcf.add_info_to_header(
-        {
-            "ID": "vannotscore",
-            "Number": 1,
-            "Type": "Integer",
-            "Description": "VANNOT score, an emulation of VaRank score",
-        }
-    )
+
+    if do_vannotscore:
+        input_vcf.add_info_to_header(
+            {
+                "ID": "vannotscore",
+                "Number": 1,
+                "Type": "Integer",
+                "Description": "VANNOT score, an emulation of VaRank score",
+            }
+        )
+
     input_vcf.add_format_to_header(get_gmc_header(config["gene_field"]))
     variant_gmc_dic = get_gmc_by_variant(input_vcf_path, config["gene_field"])
 
     output_vcf = cyvcf2.Writer(output_vcf_path, input_vcf)
 
     for variant in input_vcf:
-        variant.INFO["vannotscore"] = get_score(variant, config)
+        # vannotscore
+        if do_vannotscore:
+            variant.INFO["vannotscore"] = get_score(variant, config)
+
+        # GMC
         variant_id = get_variant_id(variant)
         try:
             variant.set_format("GMC", variant_gmc_dic[variant_id])
         except KeyError:
             # variant is not in a gene
             pass
+
         output_vcf.write_record(variant)
 
     output_vcf.close()

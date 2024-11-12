@@ -10,6 +10,9 @@ exomiser:
 annot:
 	python -m vannotplus annot -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/SGT151797.final.clean.full-annotation.v4.noprio.vcf.gz -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/annot.vcf -c src/vannotplus/config.yml -v debug
 
+annot_score:
+	python -m vannotplus annot -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/SGT151797.final.clean.full-annotation.v4.noprio.vcf.gz -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/annot.vcf -c src/vannotplus/config.yml -v debug --vannotscore
+
 annot_wes:
 	python -m vannotplus annot -i /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/KLA2403985.final.vcf -o /home1/L_PROD/NGS/BAS/HOWARD/data/nicaises/score/annotKLA.vcf -c src/vannotplus/config.yml
 

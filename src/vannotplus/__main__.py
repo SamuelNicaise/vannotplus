@@ -97,13 +97,21 @@ def main():
             default=default_config,
             help=f"YAML config file [{default_config}]",
         )
+
+    score_parser.add_argument(
+        "-vs",
+        "--vannotscore",
+        action="store_true",
+        help="Compute vannotscore if set to True. If False, only GMC is computed [False]",
+    )
+
     for subparser in (barcode_parser, exomiser_parser, score_parser, config_parser):
         subparser.add_argument(
             "-v",
             "--verbosity",
             type=str,
             default="info",
-            help="Verbosity level  [info]",
+            help="Verbosity level [info]",
         )
 
     args = parser.parse_args()
@@ -121,7 +129,7 @@ def main():
         elif args.subparser == "exomiser":
             main_exomiser(args.input, args.output, args.app, config)
         elif args.subparser == "score":
-            main_annot(args.input, args.output, config)
+            main_annot(args.input, args.output, config, do_vannotscore=args.vannotscore)
 
 
 if __name__ == "__main__":
