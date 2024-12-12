@@ -28,7 +28,7 @@ exomiser:
   db: /databases/exomiser/sam
   properties: /databases/exomiser/sam/application.properties
 
-gene_field: OMIM_genes
+gene_field: GNOMEN
 
 score_config:
   S_Known: 110

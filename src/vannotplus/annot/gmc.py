@@ -49,6 +49,8 @@ def get_gmc_by_variant(vcf_path: str, gene_field: str) -> dict[str, np.ndarray]:
 
     # overwrite genes with GMC in variant_gene_dict to save RAM
     for variant, gene in variant_gene_dict.items():
+        if "/" in gene:
+            raise NotImplementedError(f"gene field '{gene_field}' needs to contain only one gene. Got '{gene}' for variant {variant}")
         variant_gene_dict[variant] = gene_gmc_dict[gene]
 
     return variant_gene_dict
