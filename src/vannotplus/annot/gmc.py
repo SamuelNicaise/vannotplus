@@ -16,7 +16,7 @@ def get_gmc_header(gene_field: str) -> dict[str, str | int]:
     }
 
 
-def genotypes_to_counts(genotypes: np.ndarray) -> list[int]:
+def genotypes_to_counts(genotypes: np.ndarray) -> np.ndarray:
     """
     cyvcf2.Variant.gt_types returns a numpy array indicating the type of each sample.
     HOM_REF=0, HET=1. For gts012=True HOM_ALT=2, UNKNOWN=3
