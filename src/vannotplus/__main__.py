@@ -11,7 +11,7 @@ import shutil
 
 import vannotplus
 from vannotplus.commons import set_log_level, load_config
-from vannotplus.family.barcode import main_barcode
+from vannotplus.family.barcode import main_barcode, main_barcode_fast
 from vannotplus.exomiser.exomiser import main_exomiser
 from vannotplus.annot.score import main_annot
 
@@ -125,7 +125,7 @@ def main():
         config = load_config(args.config)
         log.debug(f"config: {config}")
         if args.subparser == "barcode":
-            main_barcode(args.input, args.output, args.app, config)
+            main_barcode_fast(args.input, args.output, args.app, config)
         elif args.subparser == "exomiser":
             main_exomiser(args.input, args.output, args.app, config)
         elif args.subparser == "score":
