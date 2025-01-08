@@ -4,7 +4,7 @@ import os
 from os.path import join as osj
 import shutil
 import tempfile
-
+import random
 
 from cyvcf2 import cyvcf2
 import numpy as np
@@ -153,7 +153,9 @@ def write_template(
 
 
 def docker_cmd(config, cmd):
-    docker_cmd = "docker run --rm --name vannotplus_exomiser"
+    random_tag = random.randint(1, 1000000)
+    docker_name = f"VANNOTPLUS_exomiser_{random_tag}"
+    docker_cmd = f"docker run --rm --name {docker_name}"
     for k, v in config["mount"].items():
         docker_cmd += f" -v {k}:{v}"
     docker_cmd += f" --entrypoint /usr/bin/java howard:{config['howard']['version']}"
