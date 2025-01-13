@@ -101,17 +101,32 @@ def get_sample_to_family_dict(input_vcf: cyvcf2.VCF, ped: Ped) -> dict[str, list
 
 def get_families_indexes(input_vcf: cyvcf2.VCF, ped: Ped) -> list[list[int]]:
     """
-    for each sample in the VCF, identify if one or more of its parents are in the VCF
-    for example
+    Family barcodes should follow those rules:
+        contain all samples in the family
+        starting with the index
+        to make trios (the most common case) easier to read, always write the mother before the father if both are available
+    For each sample in the VCF, this func
+        identifies if they're part of a family in the Ped
+        creates the list of indexes corresponding to the barcode that can be written based on the vcf sample list
+    Returns the corresponding list of list of indexes
+
+    For example
         if ped says:
-            sample A1 has father M1 and mother F1
+            sample A1 has father M1 and mother F1 and an additional family member X1
             sample A2 has father M2 and mother F2
-        and vcf contains (in order) the samples: A1, M1, F1, B, F2, A2
+        and vcf contains (in order) the samples: A1, M1, F1, X1, sample_not_in_ped, A2, F2
     this func returns:
-    [[021], [1], [2], [3], [4], [54]]
-    indexes are ordered and the mother is always before the father if both are available
+    [[0,2,1,3], [0,2,1,3], [0,2,1,3], [0,2,1,3], [4], [5,6], [5,6]]
+    where each digit correspond to the index of the sample in the vcf
+
+    TODO: how should samples be ordered if grandparents are in the ped?
     """
     families_indexes: list[list[int]] = []
+
+    # key: family id, value: ordered list of indexes corresponding to the family in the VCF
+    family_barcode_dict: dict[str, list[int]] = {}
+    # TODO: return the same indexes for each member of the family
+
     for i, s in enumerate(input_vcf.samples):
         family_samples = [i]
         if s in ped:
@@ -119,8 +134,14 @@ def get_families_indexes(input_vcf: cyvcf2.VCF, ped: Ped) -> list[list[int]]:
             for a in maternal_aliases:
                 if a in input_vcf.samples:
                     family_samples.append(input_vcf.samples.index(a))
+
             paternal_aliases = get_parental_aliases(ped[s], ped, False)
             for a in paternal_aliases:
+                if a in input_vcf.samples:
+                    family_samples.append(input_vcf.samples.index(a))
+
+            non_parental_aliases = ped.get_non_parental_samples_from_family(s)
+            for a in non_parental_aliases:
                 if a in input_vcf.samples:
                     family_samples.append(input_vcf.samples.index(a))
 
@@ -137,11 +158,11 @@ def main_barcode_fast(
     work_vcf_path = osj(tmp_dir.name, os.path.basename(input_vcf_path))
     shutil.copy2(input_vcf_path, work_vcf_path)
     # note: gts012=True is extremely important whenever using cyvcf2.Variant.gt_types, see cyvcf2 doc
-    input_vcf = cyvcf2.VCF(work_vcf_path, gts012=True, threads=30)
+    input_vcf = cyvcf2.VCF(work_vcf_path, gts012=True)
 
     ped = load_ped(config, app)
 
-    # for each sample, get indexes corresponding to its parents in the input VCF if they exist
+    # for each sample, get indexes corresponding to its family in the input VCF if they exist
     families_indexes = get_families_indexes(input_vcf, ped)
 
     # change input header as variants will originate from input_vcf

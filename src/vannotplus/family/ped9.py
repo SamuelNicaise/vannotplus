@@ -1,6 +1,8 @@
 from collections import UserDict
 import json
 
+import logging as log
+
 
 class Sample:
     # key: column name; value: column index in a ped9 tab-separated file according to spec
@@ -104,6 +106,49 @@ class Ped(UserDict):
 
     def write(self):
         raise NotImplementedError("Only reading is implemented for now")
+
+    def _get_sample(self, sample_name) -> Sample | None:
+        try:
+            sample = self.data[sample_name]
+            return sample
+        except KeyError:
+            log.warning(f"Sample {sample_name} not found in Ped")
+            return None
+
+    def get_maternal_aliases(self, sample_name: str) -> list[str]:
+        sample = self._get_sample(sample_name)
+        if not sample:
+            return []
+        parental_aliases = []
+        if sample.maternal_id not in ("", None):
+            parental_aliases.append(sample.maternal_id)
+            if self.data.get(sample.maternal_id, "") not in ("", None):
+                parental_aliases += self.data[sample.maternal_id].alias
+        return parental_aliases
+
+    def get_paternal_aliases(self, sample_name: str) -> list[str]:
+        sample = self._get_sample(sample_name)
+        if not sample:
+            return []
+        parental_aliases = []
+        if sample.paternal_id not in ("", None):
+            parental_aliases.append(sample.paternal_id)
+            if self.data.get(sample.paternal_id, "") not in ("", None):
+                parental_aliases += self.data[sample.paternal_id].alias
+        return parental_aliases
+
+    def get_samples_from_family(self, family: str) -> list[Sample]:
+        return [s for s in self.data.values() if s.family == family]
+
+    def get_non_parental_samples_from_family(self, sample_name: str) -> list[Sample]:
+        sample = self._get_sample(sample_name)
+        if not sample:
+            return []
+        family_samples = self.get_samples_from_family(sample.individual_id)
+        parental_aliases = self.get_maternal_aliases(
+            sample.individual_id
+        ) + self.get_paternal_aliases(sample.individual_id)
+        return [s for s in family_samples if s.individual_id not in parental_aliases]
 
     @staticmethod
     def load_from_json(ped_file: str) -> dict[str, Sample]:
