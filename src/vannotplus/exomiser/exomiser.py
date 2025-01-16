@@ -11,8 +11,17 @@ import numpy as np
 
 from vannotplus import __version__
 from vannotplus.commons import get_variant_id, load_ped, run_shell
+from vannotplus.family.ped9 import Ped
 
 TEMPLATE = osj(os.path.dirname(__file__), "template.json")
+
+
+def any_sample_has_HPOs(samples: list[str], ped: Ped) -> bool:
+    for s in samples:
+        if s in ped:
+            if ped[s].HPO not in (None, [], [""]):
+                return True
+    return False
 
 
 def main_exomiser(input_vcf, output_vcf, app, config):
@@ -36,6 +45,14 @@ def main_exomiser(input_vcf, output_vcf, app, config):
     assembly = os.path.basename(vcf.get_header_type("reference")["reference"]).split(
         ".fa"
     )[0]
+
+    if not any_sample_has_HPOs(vcf.samples, ped):
+        log.debug(
+            f"No HPO found for samples in {input_vcf}, copying it to {output_vcf} without change"
+        )
+        vcf.close()
+        shutil.copy(input_vcf, output_vcf)
+        return
 
     sample_variant_dict = {}
     for s in vcf.samples:

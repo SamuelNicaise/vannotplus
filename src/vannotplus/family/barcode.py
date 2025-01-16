@@ -137,7 +137,7 @@ def main_barcode_fast(
     work_vcf_path = osj(tmp_dir.name, os.path.basename(input_vcf_path))
     shutil.copy2(input_vcf_path, work_vcf_path)
     # note: gts012=True is extremely important whenever using cyvcf2.Variant.gt_types, see cyvcf2 doc
-    input_vcf = cyvcf2.VCF(work_vcf_path, gts012=True, threads=30)
+    input_vcf = cyvcf2.VCF(work_vcf_path, gts012=True)
 
     ped = load_ped(config, app)
 
