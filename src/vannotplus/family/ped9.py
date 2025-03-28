@@ -65,6 +65,31 @@ class Sample:
             else:
                 setattr(self, k, attributes[k])
 
+    def is_affected(self) -> bool:
+        """
+        Check if the sample is affected
+        From ped9 specification:
+        Affected status should be coded as follows:
+        -9 missing
+        0 missing
+        1 unaffected
+        2 affected
+        If any value outside of -9,0,1,2 is detected, then the samples are assumed to have phenotype values, interpreted as string phenotype values.
+        """
+        if self.phenotype not in (None, -9, 0, 1):
+            return True
+        return False
+
+    def get_parents(self) -> list[str]:
+        """
+        Returns mother then father ID if both are available
+
+        Returns an empty list if no parents are available
+        """
+        parents = [self.maternal_id, self.paternal_id]
+        parents = [p for p in parents if p not in (None, "")]
+        return parents
+
 
 class Ped(UserDict):
     """
@@ -127,3 +152,20 @@ class Ped(UserDict):
                 sample = Sample(l)
                 samples[sample.individual_id] = sample
         return samples
+
+    def get_family_from_sample(self, sample: str) -> str | None:
+        if sample not in self.data:
+            return None
+        return self.data[sample].family_id
+
+    def get_samples_from_family(self, family: str) -> list[Sample]:
+        return [s for s in self.data.values() if s.family_id == family]
+
+    def get_children_from_sample(self, sample: str) -> list[Sample]:
+        if sample not in self.data:
+            raise KeyError(f"Sample {sample} not found in the pedigree.")
+        children = []
+        for s in self.data.values():
+            if s.paternal_id == sample or s.maternal_id == sample:
+                children.append(s)
+        return children
