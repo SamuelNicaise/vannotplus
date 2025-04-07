@@ -137,7 +137,7 @@ def get_families_indexes_v2(input_vcf: cyvcf2.VCF, ped: Ped) -> list[list[int]]:
     Returns them in an ordered list of lists.
 
     Some implementation details :
-    - If a sample has no family, its list will be empty
+    - If a sample has no family, its list will only contain itself
     - All samples of a given family have the same barcode, so the same indexes.
     - Index order is : all affected samples of the family, then parents (mother first), then their parents if any (mother first) (then their parents, etc), then remaining samples of the family.
     - The above implies that trios will have the usual barcode: index-mother-father
@@ -154,14 +154,14 @@ def get_families_indexes_v2(input_vcf: cyvcf2.VCF, ped: Ped) -> list[list[int]]:
         and vcf contains (in order) the samples: A1, M1, F1, B, F2, A2, A3, M3, F3, X3, Y3
                                          index:  0   1    2  3  4   5   6   7   8   9   10
     this func returns:
-    [[0,2,1], [0,2,1], [0,2,1], [], [5,4], [5,4], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10]]
+    [[0,2,1], [0,2,1], [0,2,1], [3], [5,4], [5,4], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10], [6,9,7,8,10]]
     """
     families_indexes: list[list[int]] = []
 
     for s in input_vcf.samples:
         family = ped.get_family_from_sample(s)
         if family == None:
-            indexes = []
+            indexes = samples_to_indexes(input_vcf.samples, [s])
         else:
             barcode_samples = get_samples_for_barcode(ped, family)
             indexes = samples_to_indexes(input_vcf.samples, barcode_samples)
