@@ -164,7 +164,7 @@ def get_families_indexes_v2(input_vcf: cyvcf2.VCF, ped: Ped) -> list[list[int]]:
             indexes = []
         else:
             barcode_samples = get_samples_for_barcode(ped, family)
-            indexes = samples_to_indexes(vcf.samples, barcode_samples)
+            indexes = samples_to_indexes(input_vcf.samples, barcode_samples)
         families_indexes.append(indexes)
 
     return families_indexes
@@ -301,8 +301,8 @@ def main_barcode_fast(
 
 
 if __name__ == "__main__":
-    vcf = cyvcf2.VCF("/home1/HUB/bin/vannotplus/vannotplus/mort_subite.vcf")
-    ped = Ped("/home1/L_PROD/NGS/PRODUCTION/ped_raw/MORT_SUBITE.json")
+    VCF = cyvcf2.VCF("/home1/HUB/bin/vannotplus/vannotplus/mort_subite.vcf")
+    PED = Ped("/home1/L_PROD/NGS/PRODUCTION/ped_raw/MORT_SUBITE.json")
     # name = "DRFG73"
     # fam = ped.get_family_from_sample(name)
     # if fam:
