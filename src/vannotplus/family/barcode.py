@@ -255,7 +255,7 @@ def main_barcode_fast(
         {
             "ID": "BCF",
             "Number": 1,
-            "Type": "Integer",
+            "Type": "String",
             "Description": "Family barcode: for each sample in the family, assign 1 integer depending on genotype. 0 = wild type or unknown, 1 = heterozygous, 2 = homozygous. The family's sample list can be found in the BCFS tag.",
         }
     )

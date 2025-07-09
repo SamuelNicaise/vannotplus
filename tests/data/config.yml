@@ -1,0 +1,41 @@
+howard: 
+  bin: /home1/data/conda/envs/howard_up_to_date/bin/howard calculation
+  version: "0.11.0"
+
+ped_dir: /home1/HUB/bin/vannotplus/vannotplus/tests/data
+
+app_to_ped:
+  FAKE_APP: FAKE_APP.json
+
+mount:
+  /home1/L_PROD/NGS/BAS/HOWARD/data: /data
+  /home1/L_PROD/NGS/BAS/HOWARD/databases: /databases
+  # /home1/BAS/HOWARD/data: /data
+
+exomiser:
+  jar: /tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar
+  threads: "12"
+  heap: "75G"
+  db: /databases/exomiser/sam
+  properties: /databases/exomiser/sam/application.properties
+
+gene_field: GNOMEN
+
+score_config:
+  S_Known: 110
+  S_StopGain: 100
+  S_EssentialSplice: 90
+  S_StartStopLoss: 80
+  S_Missense: 50
+  S_CloseSplice: 70
+  S_Inframe: 30
+  S_DeepSplice: 25
+  S_Synonymous: 10
+  S_ExonIntron: 2
+  S_UTR: 1
+  B_phastCons: 5
+  B_SIFT: 5
+  B_PPH2: 5
+  B_CADD: 5
+  Threshold_SpliceAI: 0.5
+  Threshold_Phastcons: 0.95

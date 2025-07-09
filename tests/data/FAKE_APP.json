@@ -1,0 +1,122 @@
+[
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam1",
+        "id": "SGT1",
+        "maternalID": "SGT4",
+        "paternalID": "SGT5",
+        "phenotype": "Affected",
+        "sex": "",
+        "starkTags": []
+    },
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam1",
+        "id": "SGT2",
+        "maternalID": "SGT4",
+        "paternalID": "SGT5",
+        "phenotype": "Affected",
+        "sex": "",
+        "starkTags": []
+    },
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam2",
+        "id": "SGT3",
+        "maternalID": "SGT4",
+        "paternalID": "SGT5",
+        "phenotype": "Affected",
+        "sex": "",
+        "starkTags": []
+    },
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam3",
+        "id": "SGT4",
+        "maternalID": "",
+        "paternalID": "",
+        "phenotype": "",
+        "sex": "F",
+        "starkTags": [
+            "APP#POOL"
+        ]
+    },
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam4",
+        "id": "SGT5",
+        "maternalID": "",
+        "paternalID": "",
+        "phenotype": "",
+        "sex": "M",
+        "starkTags": [
+            "APP#POOL"
+        ]
+    },
+    {
+        "HPOList": [],
+        "alias": "",
+        "famID": "fam5",
+        "id": "SGT1",
+        "maternalID": "SGT4",
+        "paternalID": "SGT5",
+        "phenotype": "Affected",
+        "sex": "",
+        "starkTags": []
+    },
+    {
+        "id": "SGT11",
+        "famID": "fam10",
+        "paternalID": "SGT14",
+        "maternalID": "SGT15",
+        "sex": "F",
+        "phenotype": "Affected",
+        "alias": "SGT111",
+        "HPOList": [
+            "HP:0011504",
+            "HP:0000556"
+        ],
+        "starkTags": []
+    },
+    {
+        "id": "SGT12",
+        "alias": "",
+        "paternalID": "SGT14",
+        "maternalID": "SGT15",
+        "sex": "M",
+        "phenotype": "Affected",
+        "HPOList": [
+            "HP:0000556",
+            "HP:0045075"
+        ],
+        "starkTags": [],
+        "famID": "fam10"
+    },
+    {
+        "id": "SGT14",
+        "alias": "",
+        "paternalID": "",
+        "maternalID": "",
+        "sex": "F",
+        "phenotype": "Unaffected",
+        "HPOList": [],
+        "starkTags": [],
+        "famID": "fam10"
+    },
+    {
+        "id": "SGT15",
+        "alias": "",
+        "paternalID": "",
+        "maternalID": "",
+        "sex": "M",
+        "phenotype": "Unaffected",
+        "HPOList": [],
+        "starkTags": [],
+        "famID": "fam10"
+    }
+]

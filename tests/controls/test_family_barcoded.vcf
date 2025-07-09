@@ -1,0 +1,88 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=PASS,Description="All filters passed">
+##bcftools_normVersion=1.8+htslib-1.8
+##bcftools_normCommand=norm -m- -f /home1/TOOLS/genomes/hg19/hg19.fa /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.bwamem.canoes.vcf; Date=Tue Mar  3 04:00:22 2020
+##bcftools_normCommand=norm -m- --threads 31 /home1/IRC/DATA/TMP/HOWARD_808223180/INPUT_VCF_1.vcf; Date=Tue Mar  3 04:00:23 2020
+##bcftools_normCommand=norm -m- -f /home1/TOOLS/genomes/hg19/hg19.fa; Date=Tue Mar  3 04:02:35 2020
+##bcftools_normCommand=norm -m- --threads 31 /home1/IRC/DATA/TMP/HOWARD_591213878/INPUT_VCF_1.vcf; Date=Tue Mar  3 04:03:14 2020
+##bcftools_normCommand=norm -m- --threads 31 /home1/IRC/DATA/TMP/HOWARD_206513044/INPUT_VCF_1.vcf; Date=Tue Mar  3 06:13:28 2020
+##bcftools_viewVersion=1.8+htslib-1.8
+##bcftools_viewCommand=view -o /home1/IRC/DATA/TMP/HOWARD_808223180/INPUT_MULTI_VCF.vcf /home1/IRC/DATA/TMP/HOWARD_808223180/INPUT_VCF_1.vcf.gz; Date=Tue Mar  3 04:00:23 2020
+##bcftools_viewCommand=view -o /home1/IRC/DATA/TMP/HOWARD_591213878/INPUT_MULTI_VCF.vcf /home1/IRC/DATA/TMP/HOWARD_591213878/INPUT_VCF_1.vcf.gz; Date=Tue Mar  3 04:03:19 2020
+##bcftools_viewCommand=view -h /home1/IRC/DATA/TMP/HOWARD_591213878/INPUT_MULTI_VCF.vcf; Date=Tue Mar  3 04:03:28 2020
+##bcftools_viewCommand=view -o /home1/IRC/DATA/TMP/HOWARD_206513044/INPUT_MULTI_VCF.vcf /home1/IRC/DATA/TMP/HOWARD_206513044/INPUT_VCF_1.vcf.gz; Date=Tue Mar  3 06:13:38 2020
+##bcftools_viewCommand=view -h /home1/IRC/DATA/TMP/HOWARD_206513044/output_annotation; Date=Tue Mar  3 06:13:53 2020
+##bcftools_viewCommand=view -h /home1/IRC/DATA/TMP/HOWARD_206513044/output_calculation; Date=Tue Mar  3 06:15:22 2020
+##bcftools_viewCommand=view -U -s bwamem.canoes.howard /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf; Date=Tue Mar  3 06:16:49 2020
+##bcftools_viewCommand=view -c1 -s DRFG99 /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_200207_K00201_0394_AHGCKWBBXY_HS612.design.vcf.gz; Date=Tue Mar 18 02:26:47 2025
+##HOWARD=[0.9.13b-04/10/2018] HOWARD Annotation, Calculation, Prioritization and Translation, based on ANNOVAR and snpEff, allowing multithreading | Antony Le Bechec @ IRC ÃÂ© GNU-GPL
+##HOWARD_RELEASE=0.9.13b
+##HOWARD_PARAM=--input=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.bwamem.canoes.norm.vcf --output=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.bwamem.canoes.howard.vcf --transcripts=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.bwamem.canoes.transcripts --annotation=core,Symbol,location,outcome,hgvs,snpeff,snpeff_hgvs --calculation=VARTYPE,NOMEN --filter=default,EXOME --annovar_folder=/home1/TOOLS/tools/annovar/2015Mar22/bin --annovar_databases=/home1/TOOLS/annovar_sources --snpeff_jar=/home1/TOOLS/tools/snpeff/4.3t/bin/snpEff.jar --snpeff_databases=/home1/TOOLS/snpeff_sources4.3   --snpeff_threads=4 --tmp=/home1/IRC/DATA/TMP --tmp=/home1/IRC/DATA/TMP/HOWARD_808223180
+##HOWARD_PARAM=--input=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.merge.vcf --output=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf.tmp --annotation=core,frequency,score,annotation,prediction,snpeff_split --annovar_folder=/home1/TOOLS/tools/annovar/2015Mar22/bin --annovar_databases=/home1/TOOLS/annovar_sources --snpeff_jar=/home1/TOOLS/tools/snpeff/4.3t/bin/snpEff.jar --snpeff_databases=/home1/TOOLS/snpeff_sources4.3   --snpeff_threads=4 --tmp=/home1/IRC/DATA/TMP --tmp=/home1/IRC/DATA/TMP/HOWARD_591213878
+##HOWARD_PARAM=--input=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf.tmp --output=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf --calculation=FindByPipelines,GenotypeConcordance,VAF_STATS,CALLING_QUALITY,CALLING_QUALITY_EXPLODE,VARTYPE,NOMEN --filter=default,DEFAULT,EXOME --annovar_folder=/home1/TOOLS/tools/annovar/2015Mar22/bin --annovar_databases=/home1/TOOLS/annovar_sources --tmp=/home1/IRC/DATA/TMP --transcripts=/home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.transcripts --force   --tmp=/home1/IRC/DATA/TMP/HOWARD_206513044
+##reference=file:///STARK/databases/genomes/current/hg19.fa
+##bcftools_mergeVersion=1.8+htslib-1.8
+##bcftools_mergeCommand=merge -l /home1/IRC/DATA/TMP/HOWARD_144429071/input.variants.splitted.aaaa.vcf.ann.list --force-samples; Date=Tue Mar  3 00:02:44 2020
+##bcftools_mergeCommand=merge -l /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.final_variants_files_vcf_gz --force-samples -m none --info-rules -; Date=Tue Mar  3 04:02:35 2020
+##bcftools_mergeCommand=merge -l /home1/IRC/DATA/TMP/HOWARD_591213878/input.variants.splitted.aaaa.vcf.ann.list --force-samples; Date=Tue Mar  3 06:11:16 2020
+##bcftools_mergeCommand=merge -m none -O z -o /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_merged_200207_K00201_0394_AHGCKWBBXY_HS612.design.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG115.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG96.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG112.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG97.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG114.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG117.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG121.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG123.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG118.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG98.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG99.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG119.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG116.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG120.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG122.final.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG113.final.vcf.gz; Date=Tue Mar 18 02:11:37 2025
+##bcftools_concatVersion=1.8+htslib-1.8
+##bcftools_concatCommand=concat -a -D /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf.tmp.bwamem.canoes.howard.gz /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf.tmp.bwamem.gatkHC_EXOME.howard.gz /home1/DIAG/DATA/NGS/External_analyses/EXOME_Audrey/STARK_S19347/20200302/DRFG115/DRFG115.reports/DRFG115.full.vcf.tmp.bwamem.gatkUG_EXOME.howard.gz; Date=Tue Mar  3 06:17:23 2020
+##bcftools_annotateVersion=1.8+htslib-1.8
+##bcftools_annotateCommand=annotate -x INFO /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/DRFG115.final.vcf.gz; Date=Tue Mar 18 02:08:07 2025
+##INFO=<ID=1000G_AF_ALL,Number=A,Type=Float,Description="Estimated allele frequency in the range (0,1)">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##FORMAT=<ID=FT,Number=.,Type=String,Description="Genotype-level filter">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=EXOMISER_VARIANT_SCORE,Number=1,Type=Float,Description="Exported from vannotplus 1.0.0">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FILTER=<ID=LowQD,Description="QD < 1.5">
+##FILTER=<ID=VeryLowQual,Description="QUAL < 30.0">
+##FILTER=<ID=VeryLowCoverage,Description="DP < 10">
+##FILTER=<ID=LowDP,Description="DP < 30">
+##FILTER=<ID=LowCoverage,Description="DP < 30">
+##FILTER=<ID=VeryLowGQ,Description="GQ < 50.0">
+##FILTER=<ID=LowGQ,Description="GQ >= 50.0 && GQ < 90.0">
+##FILTER=<ID=HARD_TO_VALIDATE,Description="MQ0 >= 4 && ((MQ0 / (1.0 * DP)) > 0.1)">
+##FILTER=<ID=VeryLowDP,Description="DP < 10">
+##contig=<ID=chrM,length=16571>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr22,length=51304566>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chrY,length=59373566>
+##FORMAT=<ID=GMC,Number=1,Type=Integer,Description="Gene Mutations Count, i.e. how many variants were called in the current gene (where gene is defined by the Gene field)">
+##bcftools_mergeCommand=merge -m none -O z -o /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_merged_200207_K00201_0394_AHGCKWBBXY_HS612.design.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG99.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG116.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG122.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG117.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG123.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG118.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG120.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG113.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG96.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG112.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG115.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG97.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG114.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG121.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG98.vcf.gz /home1/data/STARK/output/tmp/tmp_200207_K00201_0394_AHGCKWBBXY_HS612/VANNOT_DRFG119.vcf.gz; Date=Tue Mar 18 09:45:27 2025
+##source_20171108.1=vcf-subset(r953) -c DRFG32.bwamem.canoes.howard.vcf /home1/DIAG/DATA/NGS/External_analyses/TES_Cardio/STARK_ANALYSIS/Cardio2/DRFG32/DRFG32.reports/DRFG32.full.vcf
+##FORMAT=<ID=VAF,Number=1,Type=Float,Description="VAF Variant Frequency, calculated from quality">
+##source_20181024.1=vcf-subset(r953) -c bwamem.canoes.howard /home1/DIAG/DATA/NGS/External_analyses/TES_Cardio/STARK_ANALYSIS/Cardio4/DRFG47/DRFG47.reports/DRFG47.full.vcf
+##bcftools_mergeVersion=1.14+htslib-1.14
+##bcftools_mergeCommand=merge -m none -Oz -o merged_MORT_SUBITE.vcf.gz 200207_K00201_0394_AHGCKWBBXY_HS612/results/VANNOT_merged_200207_K00201_0394_AHGCKWBBXY_HS612.design.vcf.gz 200930_K00201_0444_BHH7CMBBXY_HS656/results/VANNOT_merged_200930_K00201_0444_BHH7CMBBXY_HS656.design.vcf.gz 210507_K00201_0489_AHL5YTBBXY_HS700/results/VANNOT_merged_210507_K00201_0489_AHL5YTBBXY_HS700.design.vcf.gz Cardio2/results/VANNOT_merged_Cardio2.design.vcf.gz Cardio3/results/VANNOT_merged_Cardio3.design.vcf.gz Cardio4/results/VANNOT_merged_Cardio4.design.vcf.gz Cardio5/results/VANNOT_merged_Cardio5.design.vcf.gz Cardio5_suite/results/VANNOT_DRFG51.final.vcf.gz Cardio6_Exome/results/VANNOT_merged_Cardio6_Exome.design.vcf.gz Cardio7/results/VANNOT_merged_Cardio7.design.vcf.gz; Date=Mon Mar 24 10:57:16 2025
+##FORMAT=<ID=BCF,Number=1,Type=String,Description="Family barcode: for each sample in the family, assign 1 integer depending on genotype. 0 = wild type or unknown, 1 = heterozygous, 2 = homozygous. The family's sample list can be found in the BCFS tag.">
+##FORMAT=<ID=BCFS,Number=.,Type=String,Description="Samples in the family barcode">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SGT11	SGT12	SGT14	SGT15	SGT999
+chr1	69270	.	A	G	631.77	.	.	GT:BCF:BCFS	1/1:2222:SGT11,SGT12,SGT15,SGT14	1/1:2222:SGT11,SGT12,SGT15,SGT14	1/1:2222:SGT11,SGT12,SGT15,SGT14	1/1:2222:SGT11,SGT12,SGT15,SGT14	1/1:.:.
+chr1	69270	.	A	G	631.77	.	.	GT:BCF:BCFS	0/1:1112:SGT11,SGT12,SGT15,SGT14	0/1:1112:SGT11,SGT12,SGT15,SGT14	1/1:1112:SGT11,SGT12,SGT15,SGT14	0/1:1112:SGT11,SGT12,SGT15,SGT14	0/1:.:.
+chr1	69270	.	A	G	631.77	.	.	GT:BCF:BCFS	0/1:1202:SGT11,SGT12,SGT15,SGT14	1/1:1202:SGT11,SGT12,SGT15,SGT14	1/1:1202:SGT11,SGT12,SGT15,SGT14	./.:1202:SGT11,SGT12,SGT15,SGT14	0/0:.:.
