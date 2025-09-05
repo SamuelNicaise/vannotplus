@@ -37,7 +37,6 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         #   vcf_in_container = input_vcf.replace(real_path, container_path)
         if tmp_dir.startswith(real_path):
             tmp_dir_in_container = tmp_dir.replace(real_path, container_path)
-            print("tmp_dir_in_container", tmp_dir_in_container)
     log.debug(f"tmp_dir: {tmp_dir}")
     log.debug(f"tmp_dir_in_container: {tmp_dir_in_container}")
 
@@ -98,7 +97,9 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         # Default annotation: only phenotype score
         annots_to_add = ["EXOMISER_GENE_PHENO_SCORE"]
     descriptions = {k: f"Exported from vannotplus {__version__}" for k in annots_to_add}
-    descriptions["EXOMISER_GENE_PHENO_SCORE"] = "Gene-specific phenotype relevance score computed by Exomiser. 1 means the gene is highly linked to the HPOs, 0 means no link. Based on semantic similarity of the patient's HPO terms to phenotypic annotations of genes in 1) OMIM, with inheritance consistency checked and adjusted if inconsistent (the score is halved if inheritance is incompatible) and 2) phenotypes of protein-protein associated neighboring genes derived from protein interaction networks (hiphive)."
+    descriptions["EXOMISER_GENE_PHENO_SCORE"] = (
+        "Gene-specific phenotype relevance score computed by Exomiser. 1 means the gene is highly linked to the HPOs, 0 means no link. Based on semantic similarity of the patient's HPO terms to phenotypic annotations of genes in 1) OMIM, with inheritance consistency checked and adjusted if inconsistent (the score is halved if inheritance is incompatible) and 2) phenotypes of protein-protein associated neighboring genes derived from protein interaction networks (hiphive)."
+    )
 
     for annot in annots_to_add:
         vcf.add_format_to_header(
@@ -127,7 +128,6 @@ def main_exomiser(input_vcf, output_vcf, app, config):
     writer.close()
 
     if log.root.level > 10:  # if log level > debug
-        print("removing tmp_dir", tmp_dir)
         shutil.rmtree(tmp_dir)
 
 
