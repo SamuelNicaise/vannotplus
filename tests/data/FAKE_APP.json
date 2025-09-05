@@ -118,5 +118,20 @@
         "HPOList": [],
         "starkTags": [],
         "famID": "fam10"
+    },
+    {
+        "id": "SGT20",
+        "alias": "",
+        "paternalID": "",
+        "maternalID": "",
+        "sex": "M",
+        "phenotype": "Affected",
+        "HPOList": [
+            "HP:0000639",
+            "HP:0000613",
+            "HP:0001513"
+        ],
+        "starkTags": [],
+        "famID": "fam20"
     }
 ]

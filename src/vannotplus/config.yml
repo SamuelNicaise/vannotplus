@@ -19,8 +19,7 @@ app_to_ped:
 
 mount:
   /home1/L_PROD/NGS/BAS/HOWARD/data: /data
-  /home1/L_PROD/NGS/BAS/HOWARD/databases: /databases
-  # /home1/BAS/HOWARD/data: /data
+  /home1/DB/HOWARD: /databases
 
 exomiser:
   jar: /tools/exomiser/14.0.0/bin/exomiser-cli-14.0.0.jar
@@ -28,6 +27,13 @@ exomiser:
   heap: "75G"
   db: /databases/exomiser/sam
   properties: /databases/exomiser/sam/application.properties
+  # By default, only EXOMISER_GENE_PHENO_SCORE is added. Uncomment the following to add more
+  # annotations_to_add:
+  #   - EXOMISER_P_VALUE
+  #   - EXOMISER_GENE_COMBINED_SCORE
+  #   - EXOMISER_GENE_PHENO_SCORE
+  #   - EXOMISER_GENE_VARIANT_SCORE
+  #   - EXOMISER_VARIANT_SCORE
 
 gene_field: GNOMEN
 

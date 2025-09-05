@@ -46,6 +46,15 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         ".fa"
     )[0]
 
+    # make sure input and output dirs are mounted in docker no matter what the config is
+    io_dirs = [os.path.dirname(input_vcf), os.path.dirname(output_vcf)]
+    for io_dir in io_dirs:
+        if io_dir == "":
+            io_dir = os.path.abspath(".")
+        if io_dir not in config["mount"]:
+            config["mount"][io_dir] = io_dir
+    log.debug(f"config[mount]:{config['mount']}")
+
     if not any_sample_has_HPOs(vcf.samples, ped):
         log.debug(
             f"No HPO found for samples in {input_vcf}, copying it to {output_vcf} without change"
@@ -83,20 +92,21 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         run_shell(cmd)
         sample_variant_dict[s] = get_annotated_variants(osj(tmp_dir, s + ".vcf.gz"))
 
-    annots_to_add = [
-        "EXOMISER_P_VALUE",
-        "EXOMISER_GENE_COMBINED_SCORE",
-        "EXOMISER_GENE_PHENO_SCORE",
-        "EXOMISER_GENE_VARIANT_SCORE",
-        "EXOMISER_VARIANT_SCORE",
-    ]
+    try:
+        annots_to_add = config["exomiser"]["annotations_to_add"]
+    except KeyError:
+        # Default annotation: only phenotype score
+        annots_to_add = ["EXOMISER_GENE_PHENO_SCORE"]
+    descriptions = {k: f"Exported from vannotplus {__version__}" for k in annots_to_add}
+    descriptions["EXOMISER_GENE_PHENO_SCORE"] = "Gene-specific phenotype relevance score computed by Exomiser. 1 means the gene is highly linked to the HPOs, 0 means no link. Based on semantic similarity of the patient's HPO terms to phenotypic annotations of genes in 1) OMIM, with inheritance consistency checked and adjusted if inconsistent (the score is halved if inheritance is incompatible) and 2) phenotypes of protein-protein associated neighboring genes derived from protein interaction networks (hiphive)."
+
     for annot in annots_to_add:
         vcf.add_format_to_header(
             {
                 "ID": annot,
                 "Number": 1,
                 "Type": "Float",
-                "Description": f"Exported from vannotplus {__version__}",
+                "Description": descriptions[annot],
             }
         )
     writer = cyvcf2.Writer(output_vcf, vcf)
@@ -117,6 +127,7 @@ def main_exomiser(input_vcf, output_vcf, app, config):
     writer.close()
 
     if log.root.level > 10:  # if log level > debug
+        print("removing tmp_dir", tmp_dir)
         shutil.rmtree(tmp_dir)
 
 
@@ -151,16 +162,14 @@ def get_annotated_variants(vcf_path: str) -> dict:
 def write_template(
     template, s, ped, vcf_in_container, tmp_dir_in_container, tmp_dir, assembly
 ):
-    template["phenopacket"]["subject"]["id"] = s
+    template["analysis"]["proband"] = s
     if s in ped:
-        template["phenopacket"]["subject"]["sex"] = ped[s].sex
-        template["phenopacket"]["hpoIds"] = ped[s].HPO
+        template["analysis"]["hpoIds"] = ped[s].HPO
     else:
-        template["phenopacket"]["subject"]["sex"] = ""
-        template["phenopacket"]["hpoIds"] = []
-    template["phenopacket"]["htsFiles"] = [
-        {"uri": vcf_in_container, "htsFormat": "VCF", "genomeAssembly": assembly}
-    ]
+        template["analysis"]["hpoIds"] = []
+    template["analysis"]["vcf"] = vcf_in_container
+    template["analysis"]["genomeAssembly"] = assembly
+
     template["outputOptions"]["outputDirectory"] = tmp_dir_in_container
     template["outputOptions"]["outputFileName"] = s
 
