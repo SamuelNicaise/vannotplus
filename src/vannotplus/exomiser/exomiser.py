@@ -73,8 +73,11 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         if not sample_has_HPOs(s, ped):
             log.info(f"No HPO found for sample {s}, skipping Exomiser for this sample")
             shutil.copy(input_vcf, osj(tmp_dir, s + ".vcf.gz"))
-            sample_variant_dict[s] = get_annotated_variants(osj(tmp_dir, s + ".vcf.gz"))
+            sample_variant_dict[s] = get_annotated_variants(
+                osj(tmp_dir, s + ".vcf.gz"), no_hpos=True
+            )
             continue
+
         # write monosample VCF
         sample_vcf = cyvcf2.VCF(input_vcf, samples=s)
         writer = cyvcf2.Writer(osj(tmp_dir, s + "_exomiserinput.vcf"), sample_vcf)
@@ -142,7 +145,7 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         shutil.rmtree(tmp_dir)
 
 
-def get_annotated_variants(vcf_path: str) -> dict:
+def get_annotated_variants(vcf_path: str, no_hpos=False) -> dict:
     log.debug(f"get_annotated_variants::vcf_path:{vcf_path}")
     vcf = cyvcf2.VCF(vcf_path)
 
@@ -160,13 +163,16 @@ def get_annotated_variants(vcf_path: str) -> dict:
     for variant in vcf:
         key = get_variant_id(variant)
         exomiser_data = variant.INFO["Exomiser"].split("|")
-        res[key] = {
-            "EXOMISER_P_VALUE": exomiser_data[5],
-            "EXOMISER_GENE_COMBINED_SCORE": exomiser_data[6],
-            "EXOMISER_GENE_PHENO_SCORE": exomiser_data[7],
-            "EXOMISER_GENE_VARIANT_SCORE": exomiser_data[8],
-            "EXOMISER_VARIANT_SCORE": exomiser_data[9],
-        }
+        if no_hpos:  # exomiser could not run without HPOs, so no annotations
+            res[key] = {}
+        else:
+            res[key] = {
+                "EXOMISER_P_VALUE": exomiser_data[5],
+                "EXOMISER_GENE_COMBINED_SCORE": exomiser_data[6],
+                "EXOMISER_GENE_PHENO_SCORE": exomiser_data[7],
+                "EXOMISER_GENE_VARIANT_SCORE": exomiser_data[8],
+                "EXOMISER_VARIANT_SCORE": exomiser_data[9],
+            }
     return res
 
 
