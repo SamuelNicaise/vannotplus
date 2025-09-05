@@ -18,9 +18,15 @@ TEMPLATE = osj(os.path.dirname(__file__), "template.json")
 
 def any_sample_has_HPOs(samples: list[str], ped: Ped) -> bool:
     for s in samples:
-        if s in ped:
-            if ped[s].HPO not in (None, [], [""]):
-                return True
+        if sample_has_HPOs(s, ped):
+            return True
+    return False
+
+
+def sample_has_HPOs(sample: str, ped: Ped) -> bool:
+    if sample in ped:
+        if ped[sample].HPO not in (None, [], [""]):
+            return True
     return False
 
 
@@ -64,6 +70,11 @@ def main_exomiser(input_vcf, output_vcf, app, config):
 
     sample_variant_dict = {}
     for s in vcf.samples:
+        if not sample_has_HPOs(s, ped):
+            log.info(f"No HPO found for sample {s}, skipping Exomiser for this sample")
+            shutil.copy(input_vcf, osj(tmp_dir, s + ".vcf.gz"))
+            sample_variant_dict[s] = get_annotated_variants(osj(tmp_dir, s + ".vcf.gz"))
+            continue
         # write monosample VCF
         sample_vcf = cyvcf2.VCF(input_vcf, samples=s)
         writer = cyvcf2.Writer(osj(tmp_dir, s + "_exomiserinput.vcf"), sample_vcf)
