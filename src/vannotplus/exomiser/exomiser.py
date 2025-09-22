@@ -150,26 +150,41 @@ def main_exomiser(input_vcf, output_vcf, app, config):
 
 
 def get_annotated_variants(vcf_path: str, no_hpos=False) -> dict:
+    """
+    Return a dict of dicts with Exomiser annotations for each variant in the VCF, such as:
+    {
+        "chr1_123456_A_T": {
+            "EXOMISER_P_VALUE": "0.001",
+            "EXOMISER_GENE_COMBINED_SCORE": "0.85",
+            "EXOMISER_GENE_PHENO_SCORE": "0.9",
+            "EXOMISER_GENE_VARIANT_SCORE": "0.8",
+            "EXOMISER_VARIANT_SCORE": "0.75"
+        },
+        ...
+    }
+    If no_hpos is True, return an empty dict for each variant.
+    """
     log.debug(f"get_annotated_variants::vcf_path:{vcf_path}")
     vcf = cyvcf2.VCF(vcf_path)
 
-    # verify description so indexes can be used safely later
-    exomiser_header = vcf.get_header_type("Exomiser")
-    if (
-        "{RANK|ID|GENE_SYMBOL|ENTREZ_GENE_ID|MOI|P-VALUE|EXOMISER_GENE_COMBINED_SCORE|EXOMISER_GENE_PHENO_SCORE|EXOMISER_GENE_VARIANT_SCORE|EXOMISER_VARIANT_SCORE|CONTRIBUTING_VARIANT|WHITELIST_VARIANT|FUNCTIONAL_CLASS|HGVS|EXOMISER_ACMG_CLASSIFICATION|EXOMISER_ACMG_EVIDENCE|EXOMISER_ACMG_DISEASE_ID|EXOMISER_ACMG_DISEASE_NAME}"
-        not in exomiser_header["Description"]
-    ):
-        raise ValueError(
-            f"Unexpected Exomiser description in VCF header: {exomiser_header} -- failing VCF: {vcf_path}"
-        )
+    if not no_hpos:
+        # verify description so indexes can be used safely later
+        exomiser_header = vcf.get_header_type("Exomiser")
+        if (
+            "{RANK|ID|GENE_SYMBOL|ENTREZ_GENE_ID|MOI|P-VALUE|EXOMISER_GENE_COMBINED_SCORE|EXOMISER_GENE_PHENO_SCORE|EXOMISER_GENE_VARIANT_SCORE|EXOMISER_VARIANT_SCORE|CONTRIBUTING_VARIANT|WHITELIST_VARIANT|FUNCTIONAL_CLASS|HGVS|EXOMISER_ACMG_CLASSIFICATION|EXOMISER_ACMG_EVIDENCE|EXOMISER_ACMG_DISEASE_ID|EXOMISER_ACMG_DISEASE_NAME}"
+            not in exomiser_header["Description"]
+        ):
+            raise ValueError(
+                f"Unexpected Exomiser description in VCF header: {exomiser_header} -- failing VCF: {vcf_path}"
+            )
 
     res = {}
     for variant in vcf:
         key = get_variant_id(variant)
-        exomiser_data = variant.INFO["Exomiser"].split("|")
-        if no_hpos:  # exomiser could not run without HPOs, so no annotations
+        if no_hpos:
             res[key] = {}
         else:
+            exomiser_data = variant.INFO["Exomiser"].split("|")
             res[key] = {
                 "EXOMISER_P_VALUE": exomiser_data[5],
                 "EXOMISER_GENE_COMBINED_SCORE": exomiser_data[6],
