@@ -83,7 +83,11 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         writer = cyvcf2.Writer(osj(tmp_dir, s + "_exomiserinput.vcf"), sample_vcf)
         writer.write_header()
         for variant in sample_vcf:
-            writer.write_record(variant)
+            # Exomiser 14.0.0 does not follow the 4.4 VCF spec allowing spaces in INFO fields
+            l = str(variant).strip().split("\t")
+            l[7] = "."
+            infoless_variant = writer.variant_from_string("\t".join(l))
+            writer.write_record(infoless_variant)
         writer.close()
 
         write_template(
