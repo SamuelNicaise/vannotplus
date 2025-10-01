@@ -30,7 +30,18 @@ def sample_has_HPOs(sample: str, ped: Ped) -> bool:
     return False
 
 
-def main_exomiser(input_vcf, output_vcf, app, config):
+def main_exomiser(input_vcf, output_vcf, app, config, remove_info_in_tmp=True):
+    """
+    Split input_vcf into one VCF per sample
+    Write the JSON template with a phenopacket using the sample's HPOs (pedigree determined by app)
+    Run Exomiser in a docker container for each sample
+    Merge the Exomiser annotations back into the original VCF, as a sample-specific FORMAT field
+
+    If remove_info_in_tmp is True, the INFO field is removed from the temporary monosample VCFs
+    to avoid issues with Exomiser being limited to VCF version <= 4.2
+    All of the original INFO fields are retained in the final output VCF no matter what.
+    The only reason to use remove_info_in_tmp=False is improving performance, if the input VCF is already compatible with Exomiser.
+    """
     with open(TEMPLATE, "r") as f:
         template = json.load(f)
     output_dir = os.path.dirname(output_vcf)
@@ -83,11 +94,14 @@ def main_exomiser(input_vcf, output_vcf, app, config):
         writer = cyvcf2.Writer(osj(tmp_dir, s + "_exomiserinput.vcf"), sample_vcf)
         writer.write_header()
         for variant in sample_vcf:
-            # Exomiser 14.0.0 does not follow the 4.4 VCF spec allowing spaces in INFO fields
-            l = str(variant).strip().split("\t")
-            l[7] = "."
-            infoless_variant = writer.variant_from_string("\t".join(l))
-            writer.write_record(infoless_variant)
+            if not remove_info_in_tmp:
+                writer.write_record(variant)
+            else:
+                # Exomiser 14.0.0 does not follow the 4.4 VCF spec allowing spaces in INFO fields
+                l = str(variant).strip().split("\t")
+                l[7] = "."
+                infoless_variant = writer.variant_from_string("\t".join(l))
+                writer.write_record(infoless_variant)
         writer.close()
 
         write_template(
