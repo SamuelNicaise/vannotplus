@@ -272,7 +272,7 @@ def main_barcode_fast(
     # then iterate over input_vcf and write variants with barcodes in output_vcf
     for var in input_vcf:
         if var.POS % 100000 == 0:
-            log.info(var.CHROM, var.POS)
+            log.info(f"{var.CHROM}:{var.POS}")
         bcf_list = []
         bcfs_list = []
 
