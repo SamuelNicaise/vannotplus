@@ -4,12 +4,21 @@ from vannotplus.annot.gmc import get_gmc_by_variant, get_gmc_header
 from vannotplus.annot.splicing import get_splicing_score
 from vannotplus.commons import get_variant_id, get_variant_info
 
+def gmc_config_check(config: dict) -> None:
+    minimal_gmc_dic = {"gmc": {"gene_field": "relevant INFO field containing gene name", "do_filtered_gmc": False}}
+    try:
+        config["gmc"]
+        config["gmc"]["gene_field"]
+        config["gmc"]["do_filtered_gmc"]
+    except KeyError:
+        raise KeyError(f"GMC configuration section is missing in config file. In its most minimal form, it should look like this: {minimal_gmc_dic}")
 
 def main_annot(
     input_vcf_path: str,
     output_vcf_path: str,
     config: dict,
     do_vannotscore: bool = False,
+    do_filtered_gmc: bool = False,
 ) -> None:
     """
     VANNOT score has been replaced by PZTScore_transcript computed by howard
@@ -18,6 +27,11 @@ def main_annot(
 
     This code is still required in VANNOT to add GMC to the final VCF
     """
+    gmc_config_check(config)
+    if config["gmc"]["do_filtered_gmc"]:
+        # if specified in config, override function argument
+        do_filtered_gmc = True
+
     input_vcf = cyvcf2.VCF(input_vcf_path)
 
     if do_vannotscore:
@@ -30,8 +44,13 @@ def main_annot(
             }
         )
 
-    input_vcf.add_format_to_header(get_gmc_header(config["gene_field"]))
-    variant_gmc_dic = get_gmc_by_variant(input_vcf_path, config["gene_field"])
+    print(config)
+    for header in get_gmc_header(config["gmc"]["gene_field"], do_filtered_gmc):
+        input_vcf.add_format_to_header(header)
+
+    variant_gmc_dic, variant_filtered_gmc_dic = get_gmc_by_variant(
+        input_vcf_path, config["gmc"], do_filtered_gmc=do_filtered_gmc
+    )
 
     output_vcf = cyvcf2.Writer(output_vcf_path, input_vcf)
 
@@ -44,6 +63,8 @@ def main_annot(
         variant_id = get_variant_id(variant)
         try:
             variant.set_format("GMC", variant_gmc_dic[variant_id])
+            if do_filtered_gmc:
+                variant.set_format("GMC_FILTERED", variant_filtered_gmc_dic[variant_id])
         except KeyError:
             # variant is not in a gene
             pass

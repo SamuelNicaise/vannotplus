@@ -24,7 +24,32 @@ exomiser:
     - EXOMISER_VARIANT_SCORE
 # Note: EXOMISER_P_VALUE is not added because it is slightly different each time, making testing more difficult
 
-gene_field: GNOMEN
+gmc:
+  do_filtered_gmc: true
+  gene_field: GNOMEN 
+  pop_freq_fields:
+    - gnomadAltFreq_popmax
+    - 1000G_AF_ALL
+  pop_freq_threshold: 0.01
+  pop_homcount_fields:
+    - gnomadHomCount_all
+  pop_homcount_threshold: 5
+  omim_id_field: OMIM_ID
+  omim_inheritance_field: OMIM_inheritance
+  gt: 1
+  vaf_threshold: 0.2
+  allelefreq_fields:
+    - BBS_RP_ALLELEFREQ
+    - DI_ALLELEFREQ
+    - DIPAI_ALLELEFREQ
+    - GENODENT_ALLELEFREQ
+  allelefreq_threshold: 0.05
+  homcount_fields:
+    - BBS_RP_HOMCOUNT
+    - DI_HOMCOUNT
+    - DIPAI_HOMCOUNT
+    - GENODENT_HOMCOUNT
+  homcount_threshold: 10
 
 score_config:
   S_Known: 110

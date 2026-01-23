@@ -1,0 +1,41 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=PASS,Description="All filters passed">
+##source=SelectVariants
+##INFO=<ID=GNOMEN,Number=1,Type=String,Description="Gene name">
+##FORMAT=<ID=VAF,Number=1,Type=Float,Description="VAF Variant Frequency, calculated from quality">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##FORMAT=<ID=FT,Number=.,Type=String,Description="Genotype-level filter">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chrM,length=16571>
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chrY,length=59373566>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr22,length=51304566>
+##FORMAT=<ID=GMC,Number=1,Type=Integer,Description="Gene Mutations Count, i.e. how many variants were called in the current gene (where gene is defined by the GNOMEN field)">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAL185666	SGT2300285	SAL2006743
+chr1	1271940	rs149812757	C	T	1328.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	./.:.:.:.:1	./.:.:.:.:0	0/1:83,55:138:0.398551:2
+chr1	1273278	rs307370	A	G	1295.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	1/1:0,14:14:1:1	./.:.:.:.:0	1/1:0,27:27:1:2
+chr1	1275264	.	A	G	445.77	PASS	GNOMEN=DEF	GT:AD:DP:VAF:GMC	./.:.:.:.:0	./.:.:.:.:0	0/1:187,63:303:0.252:1

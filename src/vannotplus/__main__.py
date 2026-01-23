@@ -57,7 +57,7 @@ def main():
 
     score_parser = subparsers.add_parser(
         "annot",
-        help="Add Gene Variations Count (GVC) for each sample and vannotscore for each variant to input VCF",
+        help="Add Gene Mutations Count (GMC) and optionally Filtered Gene Mutations Count (FILT_GMC) for each sample and vannotscore for each variant to input VCF",
         formatter_class=argparse.MetavarTypeHelpFormatter,
     )
     score_parser.set_defaults(subparser="score")
@@ -102,7 +102,13 @@ def main():
         "-vs",
         "--vannotscore",
         action="store_true",
-        help="Compute vannotscore if set to True. If False, only GMC is computed [False]",
+        help="Compute vannotscore if set to True. You should probably not use this anymore [False]",
+    )
+    score_parser.add_argument(
+        "-fgmc",
+        "--filtered_gmc",
+        action="store_true",
+        help="Compute Filtered Gene Mutations Count (FILT_GMC) in addition to GMC [False]",
     )
 
     for subparser in (barcode_parser, exomiser_parser, score_parser, config_parser):
@@ -129,7 +135,13 @@ def main():
         elif args.subparser == "exomiser":
             main_exomiser(args.input, args.output, args.app, config)
         elif args.subparser == "score":
-            main_annot(args.input, args.output, config, do_vannotscore=args.vannotscore)
+            main_annot(
+                args.input,
+                args.output,
+                config,
+                do_vannotscore=args.vannotscore,
+                do_filtered_gmc=args.filtered_gmc,
+            )
 
 
 if __name__ == "__main__":

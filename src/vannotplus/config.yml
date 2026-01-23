@@ -2,7 +2,8 @@ howard:
   bin: /home1/data/conda/envs/howard_up_to_date/bin/howard calculation
   version: "0.11.0"
 
-ped_dir: /home1/data/WORK_DIR_SAM/Ped_raw/Data
+# ped_dir: /home1/data/WORK_DIR_SAM/Ped_raw/Data
+ped_dir: /home1/L_PROD/NGS/PRODUCTION/ped_raw
 
 app_to_ped:
   BBS_RP: BBS_RP.json
@@ -16,6 +17,9 @@ app_to_ped:
   PMDA: PMDA.json
   WES_AGILENT: WES.json
   WES_TWIST: WES.json
+  AUDREY_1: PMDA_audrey_1pathologie.json
+  AUDREY_2: PMDA_audrey_2prescription.json
+  AUDREY_3: PMDA_audrey_3compterendu.json
 
 mount:
   /home1/L_PROD/NGS/BAS/HOWARD/data: /data
@@ -35,7 +39,57 @@ exomiser:
   #   - EXOMISER_GENE_VARIANT_SCORE
   #   - EXOMISER_VARIANT_SCORE
 
-gene_field: GNOMEN
+# Base GMC : number of variants having the same gene in the specified gene_field
+# Filtered GMC : same, but counting only variants passing the AR htz filter:
+#                   - pop_freq <= pop_freq_threshold for each popfreq field
+#                   - homcount <= homcount_threshold
+#                   - omim_id not empty
+#                   - omim_inheritance empty or matching AR
+#                   - VAF > 0.2
+#                   - genotype = 0/1
+#                   - allelefreq_fields <= allelefreq_threshold for each allelefreq field
+#                   - homcount_fields <= homcount_threshold for each homcount field
+# TODO: Change gene_field back to GNOMEN !!!!
+gmc:
+  do_filtered_gmc: true
+  gene_field: GNOMEN 
+  pop_freq_fields:
+    - gnomadAltFreq_popmax
+    - 1000G_AF_ALL
+  pop_freq_threshold: 0.01
+  pop_homcount_fields:
+    - gnomadHomCount_all
+  pop_homcount_threshold: 5
+  omim_id_field: OMIM_ID
+  omim_inheritance_field: OMIM_inheritance
+  gt: 1
+  vaf_threshold: 0.2
+  allelefreq_fields:
+    - BBS_RP_ALLELEFREQ
+    - DI_ALLELEFREQ
+    - DIPAI_ALLELEFREQ
+    - GENODENT_ALLELEFREQ
+    - INFERTILITE_ALLELEFREQ
+    - PC_NEURO_ALLELEFREQ
+    - MYOPATHIE_ALLELEFREQ
+    - PMDA_ALLELEFREQ
+    - WES_AGILENT_ALLELEFREQ
+    - WES_ROCHE_ALLELEFREQ
+    - WES_TWIST_ALLELEFREQ
+  allelefreq_threshold: 0.05
+  homcount_fields:
+    - BBS_RP_HOMCOUNT
+    - DI_HOMCOUNT
+    - DIPAI_HOMCOUNT
+    - GENODENT_HOMCOUNT
+    - INFERTILITE_HOMCOUNT
+    - PC_NEURO_HOMCOUNT
+    - MYOPATHIE_HOMCOUNT
+    - PMDA_HOMCOUNT
+    - WES_AGILENT_HOMCOUNT
+    - WES_ROCHE_HOMCOUNT
+    - WES_TWIST_HOMCOUNT
+  homcount_threshold: 10
 
 score_config:
   S_Known: 110
