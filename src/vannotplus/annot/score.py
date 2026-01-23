@@ -28,6 +28,8 @@ def main_annot(
     By default it is False and VANNOT score is not computed
 
     This code is still required in VANNOT to add GMC to the final VCF
+
+    if config["gmc"]["do_filtered_gmc"] == True: compute filtered GMC as well. This overrides the function argument do_filtered_gmc
     """
     gmc_config_check(config)
     if config["gmc"]["do_filtered_gmc"]:
