@@ -49,10 +49,9 @@ exomiser:
 #                   - genotype = 0/1
 #                   - allelefreq_fields <= allelefreq_threshold for each allelefreq field
 #                   - homcount_fields <= homcount_threshold for each homcount field
-# TODO: Change gene_field back to GNOMEN !!!!
 gmc:
   do_filtered_gmc: true
-  gene_field: GNOMEN 
+  gene_field: GNOMEN
   pop_freq_fields:
     - gnomadAltFreq_popmax
     - 1000G_AF_ALL

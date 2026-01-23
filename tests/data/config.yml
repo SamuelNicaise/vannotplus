@@ -26,7 +26,7 @@ exomiser:
 
 gmc:
   do_filtered_gmc: true
-  gene_field: GNOMEN 
+  gene_field: GNOMEN
   pop_freq_fields:
     - gnomadAltFreq_popmax
     - 1000G_AF_ALL
