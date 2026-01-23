@@ -1,3 +1,5 @@
+import logging as log
+
 from cyvcf2 import cyvcf2
 
 from vannotplus.annot.gmc import get_gmc_by_variant, get_gmc_header
@@ -44,7 +46,7 @@ def main_annot(
             }
         )
 
-    print(config)
+    log.debug(config)
     for header in get_gmc_header(config["gmc"]["gene_field"], do_filtered_gmc):
         input_vcf.add_format_to_header(header)
 

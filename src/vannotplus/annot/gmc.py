@@ -158,7 +158,7 @@ def get_gmc_by_variant(
     gene_filtered_gmc_dict = {}
     default_filtered_gmc = np.zeros(len(vcf.samples), dtype=np.int8)
 
-    print("do_filtered_gmc:", do_filtered_gmc)
+    log.debug("do_filtered_gmc:", do_filtered_gmc)
     for variant in vcf:
         key = get_variant_id(variant)
         try:

@@ -32,7 +32,6 @@ gmc_test:
 gmc_mini:
 	python -m vannotplus annot -i ./gmc_mini_input.vcf -o gmc_mini_output.vcf -c src/vannotplus/config.yml
 
-
 gmc_test_routine:
 	python -m vannotplus annot -i ./vannot.exome718.vcf.gz -o exome718_test_gmc.vcf -c src/vannotplus/config.yml
 
