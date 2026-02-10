@@ -14,7 +14,7 @@ def test_gmc(debug_mode=False):
     control_vcf = osj(current_dir, "controls", "gmc_mini_control.vcf")
 
     tmp_dir = tempfile.TemporaryDirectory()
-    output_vcf = osj(tmp_dir.name, "gmc_mini_out.vcf")
+    output_vcf = osj("gmc_mini_out.vcf")
     config["gmc"]["do_filtered_gmc"] = False
     main_annot(input_vcf, output_vcf, config, do_vannotscore=False, do_filtered_gmc=False)
     print("output_vcf", output_vcf)

@@ -36,6 +36,6 @@
 ##contig=<ID=chr22,length=51304566>
 ##FORMAT=<ID=GMC,Number=1,Type=Integer,Description="Gene Mutations Count, i.e. how many variants were called in the current gene (where gene is defined by the GNOMEN field)">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAL185666	SGT2300285	SAL2006743
-chr1	1271940	rs149812757	C	T	1328.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	./.:.:.:.:1	./.:.:.:.:0	0/1:83,55:138:0.398551:2
-chr1	1273278	rs307370	A	G	1295.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	1/1:0,14:14:1:1	./.:.:.:.:0	1/1:0,27:27:1:2
-chr1	1275264	.	A	G	445.77	PASS	GNOMEN=DEF	GT:AD:DP:VAF:GMC	./.:.:.:.:0	./.:.:.:.:0	0/1:187,63:303:0.252:1
+chr1	1271940	rs149812757	C	T	1328.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	./.:.:.:.:.	./.:.:.:.:.	0/1:83,55:138:0.398551:2
+chr1	1273278	rs307370	A	G	1295.77	PASS	GNOMEN=ABC	GT:AD:DP:VAF:GMC	1/1:0,14:14:1:1	./.:.:.:.:.	1/1:0,27:27:1:2
+chr1	1275264	.	A	G	445.77	PASS	GNOMEN=DEF	GT:AD:DP:VAF:GMC	./.:.:.:.:.	./.:.:.:.:.	0/1:187,63:303:0.252:1

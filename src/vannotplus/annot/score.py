@@ -1,10 +1,15 @@
 import logging as log
 
 from cyvcf2 import cyvcf2
+import numpy as np
 
 from vannotplus.annot.gmc import get_gmc_by_variant, get_gmc_header
 from vannotplus.annot.splicing import get_splicing_score
 from vannotplus.commons import get_variant_id, get_variant_info
+
+
+MIN_INT32 = np.iinfo(np.int32).min
+
 
 def gmc_config_check(config: dict) -> None:
     minimal_gmc_dic = {"gmc": {"gene_field": "relevant INFO field containing gene name", "do_filtered_gmc": False}}
@@ -14,6 +19,21 @@ def gmc_config_check(config: dict) -> None:
         config["gmc"]["do_filtered_gmc"]
     except KeyError:
         raise KeyError(f"GMC configuration section is missing in config file. In its most minimal form, it should look like this: {minimal_gmc_dic}")
+
+def replace_empty_genotype(gt_types: np.ndarray, format_field: np.ndarray) -> np.ndarray:
+    """
+    Sets format_field to "." (minimal value of np.int32 in cyvcf2) if genotype is "./." (gt_type = 3 in cyvcf2 IF gts012=True when reading the input VCF)
+
+    The advantage of setting it to "." instead of 0 is that it ensures that no useless variant-sample line will be created in downstream database storage.
+
+    Parameters:
+    -----------
+    gt_types : ndarray dtype='int32' obtained with cyvcf2.Variant.gt_types
+    format_field : ndarray dtype='int32' obtained with cyvcf2.Variant.format("<field_name>")
+    """
+    res = format_field.copy() # applying the mask does not work if done directly on format_field
+    res[gt_types == 3] = MIN_INT32
+    return res
 
 def main_annot(
     input_vcf_path: str,
@@ -36,7 +56,7 @@ def main_annot(
         # if specified in config, override function argument
         do_filtered_gmc = True
 
-    input_vcf = cyvcf2.VCF(input_vcf_path)
+    input_vcf = cyvcf2.VCF(input_vcf_path, gts012=True)
 
     if do_vannotscore:
         input_vcf.add_info_to_header(
@@ -66,9 +86,11 @@ def main_annot(
         # GMC
         variant_id = get_variant_id(variant)
         try:
-            variant.set_format("GMC", variant_gmc_dic[variant_id])
+            gmc_with_null = replace_empty_genotype(variant.gt_types, variant_gmc_dic[variant_id])
+            variant.set_format("GMC", gmc_with_null)
             if do_filtered_gmc:
-                variant.set_format("GMC_FILTERED", variant_filtered_gmc_dic[variant_id])
+                gmc_filtered_with_null = replace_empty_genotype(variant.gt_types, variant_filtered_gmc_dic[variant_id])
+                variant.set_format("GMC_FILTERED", gmc_filtered_with_null)
         except KeyError:
             # variant is not in a gene
             pass

@@ -38,7 +38,7 @@ def genotypes_to_counts(genotypes: np.ndarray) -> np.ndarray:
     # return [1 if 1 <= v <= 2 else 0 for v in genotypes]
     # return np.where(1 <= genotypes <= 2, 1, 0)
     mask = (genotypes >= 1) & (genotypes <= 2)
-    return mask.astype(np.int8)
+    return mask.astype(np.int32)
 
 
 def variant_to_filtered_counts(variant: cyvcf2.Variant, default_empty_array: np.ndarray, gmc_config: dict, eps: float = 1e-8) -> np.ndarray:
@@ -129,7 +129,7 @@ def variant_to_filtered_counts(variant: cyvcf2.Variant, default_empty_array: np.
         result_array &= ~np.isnan(vaf_array) & (vaf_array >= vaf_threshold)
 
     log.debug(f"Variant passed all filters: {variant.CHROM} {variant.POS} {variant.REF} {variant.ALT} {vaf_array}")
-    return result_array.astype(np.int8)
+    return result_array.astype(np.int32)
 
 def filter_gmc_by_gmc(gmc: np.ndarray, filtered_gmc: np.ndarray) -> np.ndarray:
     """
@@ -168,7 +168,8 @@ def get_gmc_by_variant(
     filtered_variant_gene_dict = {}
     gene_gmc_dict = {}
     gene_filtered_gmc_dict = {}
-    default_filtered_gmc = np.zeros(len(vcf.samples), dtype=np.int8)
+    # We keep np.int32 type to be able to set its value to "." (minimal value of np.int32 in cyvcf2)
+    default_filtered_gmc = np.zeros(len(vcf.samples), dtype=np.int32)
 
     log.debug(f"do_filtered_gmc: {do_filtered_gmc}")
     for variant in vcf:
