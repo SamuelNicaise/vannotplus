@@ -51,6 +51,9 @@ def variant_to_filtered_counts(variant: cyvcf2.Variant, default_empty_array: np.
 
     For maximum computing speed, checks that fails the most should be done first to avoid further checks.
 
+    There is one last filtering step that is not done in this func for performance optimization: unfiltered GMC should be >= 1, but it is not computed yet when this func is executed.
+    This last filter is implemented in filter_gmc_by_gmc(), called by get_gmc_by_variant() after this func.
+
     Note: this relies on numpy float comparisons. Due to floating point precision issues,  a variant with allele frequency exactly equal to the threshold might be considered as above or below the threshold (e.g. 0.01 might be stored as 0.009999999 or 0.010000001).
     To avoid this, a small epsilon (default: 1e-8) is added to float thresholds conservatively.
     """
@@ -128,6 +131,15 @@ def variant_to_filtered_counts(variant: cyvcf2.Variant, default_empty_array: np.
     log.debug(f"Variant passed all filters: {variant.CHROM} {variant.POS} {variant.REF} {variant.ALT} {vaf_array}")
     return result_array.astype(np.int8)
 
+def filter_gmc_by_gmc(gmc: np.ndarray, filtered_gmc: np.ndarray) -> np.ndarray:
+    """
+    Filter GMC on itself: if GMC < 2, then filtered GMC should be 0. This is because genes containing only one variant should not appear in the AR hom filter.
+
+    Example:
+    >>> filter_gmc_by_gmc(np.array([0, 1, 4, 5]), np.array([0, 1, 2, 3]))
+    array([0, 0, 2, 3])
+    """
+    return np.where(gmc < 2, 0, filtered_gmc)
 
 def get_gmc_by_variant(
     vcf_path: str, gmc_config: dict, do_filtered_gmc: bool = False
@@ -201,6 +213,10 @@ def get_gmc_by_variant(
         if do_filtered_gmc:
             # Unlike gmc that is always null (if variant isn't in a gene) or >= 1 (if variant is in a gene),
             # filtered_gmc can be 0 if the variant is in a gene but no variant in that gene passed the filter
-            filtered_variant_gene_dict[variant] = gene_filtered_gmc_dict[gene]
+
+            #there is one ultimate step that can't be done before gmc is computed: filter filtered_gmc on gmc itself
+            final_filtered_gmc = filter_gmc_by_gmc(gene_gmc_dict[gene], gene_filtered_gmc_dict[gene])
+
+            filtered_variant_gene_dict[variant] = final_filtered_gmc
 
     return variant_gene_dict, filtered_variant_gene_dict
