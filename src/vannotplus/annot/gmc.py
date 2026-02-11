@@ -24,7 +24,7 @@ def get_gmc_header(gene_field: str, do_filtered_gmc) -> list[dict[str, str | int
                 "ID": "GMC_FILTERED",
                 "Number": 1,
                 "Type": "Integer",
-                "Description": f"Filtered Gene Mutations Count, i.e. how many variants passing Cutevariant's AR htz filter were called in the current gene (where gene is defined by the {gene_field} field). AR htz filtered is defined as: gnomadaltfreq_popmax < 0.01 and TODO",
+                "Description": f"Filtered Gene Mutations Count, i.e. number of variants in the current gene (defined by the {gene_field} field) that pass Cutevariant's AR htz filter (from DIAG_v3.yml). The intended use of this column is to add GMC_FILTERED >=2 to said AR htz filter, so that only genes with at least 2 variants passing the filter are visible.",
             }
         )
     return headers
@@ -89,7 +89,6 @@ def variant_to_filtered_counts(variant: cyvcf2.Variant, default_empty_array: np.
 
     for inner_freq in gmc_config["allelefreq_fields"]:
         try:
-            print(variant.ID, variant.INFO[inner_freq], gmc_config["allelefreq_threshold"], variant.INFO[inner_freq] > gmc_config["allelefreq_threshold"], variant.INFO[inner_freq] > gmc_config["allelefreq_threshold"] + eps)
             if variant.INFO[inner_freq] > gmc_config["allelefreq_threshold"] + eps:
                 return default_empty_array
         except KeyError:
